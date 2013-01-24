@@ -115,8 +115,26 @@
       public function decrypt($input)
       {
          $_SESSION['debug'] .= "^^^^^^^^^^^^^^^^^^^^^^^^^^^\nDecryptie van een blok data is \nnog niet geimplementeerd, \nzie opdrachten studiewijzer\n^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
+
+          $IO = new ioOperations();
+          $AES = new Aes();
+          $key = $IO->getByteArrayFromKeyString();
+          $bytes = $IO->getByteArrayFromInput($input);
+          $state = $IO->getState($bytes);
+          $w = $AES->keyExpansion($key);
+          $rnd = 0; // ??
+          $res0 = $AES->addRoundKey($state,$w,$rnd);
+          $res1 = $AES->runDecryptRound($res0);
+          //todo
          return($input);
       } //end function decrypt
+
+       private function runDecryptRound($in){
+           $AES = new Aes();
+           //$in = $AES->
+             //todo
+           return $in;
+       }
 
       public function subBytes($state)
       {
@@ -149,7 +167,12 @@
          }         
          return $state;
       } // end function shiftRows
+      public function invertShiftRow($state){
+          //todo
 
+
+          return $state;
+      }
 
       public static function mixColumns($state)
       {  
@@ -206,8 +229,13 @@
          return $state;
       } // end function mixColumns
 
-
-      public function addRoundKey($state, $w, $rnd)   // xor Round Key into state S [§5.1.4]
+       /**
+        * @param $state
+        * @param $w bytearray The expanded key
+        * @param $rnd int
+        * @return mixed The mixed input $state
+        */
+       public function addRoundKey($state, $w, $rnd)   // xor Round Key into state S [§5.1.4]
       {
          $_SESSION['debug'] .= "\naddRoundKey:\n";
          for ($r=0; $r<4; $r++) {
