@@ -114,7 +114,7 @@
 
       public function decrypt($input)
       {
-         $_SESSION['debug'] .= "^^^^^^^^^^^^^^^^^^^^^^^^^^^\nDecryptie van een blok data is \nnog niet geimplementeerd, \nzie opdrachten studiewijzer\n^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
+         //$_SESSION['debug'] .= "^^^^^^^^^^^^^^^^^^^^^^^^^^^\nDecryptie van een blok data is \nnog niet geimplementeerd, \nzie opdrachten studiewijzer\n^^^^^^^^^^^^^^^^^^^^^^^^^^^\n";
 
           $IO = new ioOperations();
           $AES = new Aes();
@@ -130,7 +130,30 @@
       } //end function decrypt
 
        private function runDecryptRound($in){
+
            $AES = new Aes();
+	       for($row = 0; $row < 4; $row ++){
+		       for($column = 0 ; $column < 4; $column++){
+			       $_SESSION['debug'] .= "Input";
+			       $_SESSION['debug'] .= "in[$row][$column]=".$in[$row][$column]."\n";
+		       }
+	       }
+	       $in = $AES::shiftRows($in);
+	       for($row = 0; $row < 4; $row ++){
+		       for($column = 0 ; $column < 4; $column++){
+			       $_SESSION['debug'] .= "ShiftRow";
+			       $_SESSION['debug'] .= "in[$row][$column]=".$in[$row][$column]."\n";
+		       }
+	       }
+	       $in = $AES::invertShiftRow($in);
+	       for($row = 0; $row < 4; $row ++){
+		       for($column = 0 ; $column < 4; $column++){
+			       $_SESSION['debug'] .= "InvShiftRow";
+			       $_SESSION['debug'] .= "in[$row][$column]=".$in[$row][$column]."\n";
+		       }
+	       }
+
+	       $in1 = $AES::invertShiftRow($in);
            //$in = $AES->
              //todo
            return $in;
@@ -167,11 +190,28 @@
          }         
          return $state;
       } // end function shiftRows
-      public function invertShiftRow($state){
-          //todo
 
+	   /**
+	    * Todo: test
+	    * @param $state
+	    * @return mixed
+	    */
+	   public function invertShiftRow($state){
+          $temp = array();
+          for($row = 0; $row < 4; $row++){
+	          for($column = 0 ; $column < 4; $column++){
+		          $temp[$row][($row + $column)%4] = $state[$row][$column];
+	          }
+          }
+	      //now, copy back the result from temp to state
+	      for ($row=0; $row<4; $row++){
+		      for ($column=0; $column<4; $column++){
+			      $state[$row][$column] = $temp[$row][$column];
+			      $_SESSION['debug'] .= "state[$row][$column]=".$state[$row][$column]."\n";
+		      }
+	      }
 
-          return $state;
+	      return $state;
       }
 
       public static function mixColumns($state)
