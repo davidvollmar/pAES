@@ -139,15 +139,14 @@
 						 $substitutedBytes=self::subBytes($result);
 						 $shiftedRows=self::shiftRows($substitutedBytes);					
 						 $mixedColumns=self::mixColumns($shiftedRows);
-						 $endLoopResult = self::addRoundKey($state, $w, $i); //add roundkey 1-9
+						 $endLoopResult = self::addRoundKey($mixedColumns, $w, $i); //add roundkey 1-9
 					}
 					
 			// Stap 3 laatste stap : Sub, shift, addRoundKey :
 					
-					$substitutedBytes=self::subBytes($$endLoopResult);
+					$substitutedBytes=self::subBytes($endLoopResult);
 					$shiftedRows=self::shiftRows($substitutedBytes);					
-					$EncryptedResult = self::addRoundKey($state, $w, 10); //add roundkey 10 
-		
+					$EncryptedResult = self::addRoundKey($shiftedRows, $w, 10); //add roundkey 10 		
 	
 			$_SESSION['debug'] .= "Encrypted result :\n";   
 			for ($row=0; $row<4; $row++) {
@@ -166,26 +165,21 @@
 		
 		// Stap 1 : Key expansion draaien en met sleutel nr 10 beginnen ipv sleutel 0.
 		$w = self::keyExpansion($key);
-		$result=self::addRoundKey($input, $w, 10);
-		// Stap 2 : initiele decryptie ronde :
-		$lastStep = self::addRoundKey($result,$w,9);
-		$mixC = self::invMixColumns($lastStep);		
-		$shift = self::invShiftRows($mixC);
-		$sub = self::invSubBytes($shift);		
-		// Stap 3 : loop starten, 9 keer doorlopen:
-		for($i=1;$i<9;$i++)
+		$result=self::addRoundKey($input, $w, 10);	
+			
+		// Stap 2 : loop starten, 9 keer doorlopen:
+		for($i=9;$i>0;$i--)
 				{
-					$result = self::addRoundKey($mix,$w,$i);
-					$mix = self::invMixColumns($invShift);
-					$invShift = self::invShiftRows($lsub);
-					$lsub = self::invSubBytes($lastStep);				
+					$invShift = self::invShiftRows($result);
+					$lsub = self::invSubBytes($invShift);
+					$mix = self::invMixColumns($lsub);					
+					$result = self::addRoundKey($mix,$w,$i);					
 				}
 		// Stap 4 : laatste decryptie stap :
-		$result = self::addRoundKey($shift,$w,0);
-		$shift = self::invShiftRows($sub);
-		$sub = self::invSubBytes($result);  
-	  
-         $_SESSION['debug'] .= "Finished!";
+		$shift = self::invShiftRows($result);	
+		$sub = self::invSubBytes($shift);  
+		$result = self::addRoundKey($sub,$w,0);
+         $_SESSION['debug'] .= "Finished decrypting!\n";
          return($result);
       } //end function decrypt
 
@@ -193,7 +187,7 @@
       {
          for ($row=0; $row<4; $row++){ // for all 16 bytes in the (4x4-byte) State
             for ($column=0; $column<4; $column++){ // for all 16 bytes in the (4x4-byte) State
-               $_SESSION['debug'] .= "state[$row][$column]=" . $state[$row][$column] .
+               $_SESSION['debug'] .= "subBytes : state[$row][$column]=" . $state[$row][$column] .
                   "-->" . self::$sBox[$state[$row][$column]]."\n";
                $state[$row][$column] = self::$sBox[$state[$row][$column]];
             }
@@ -205,7 +199,7 @@
 	  {
          for ($row=0; $row<4; $row++){ // for all 16 bytes in the (4x4-byte) State
             for ($column=0; $column<4; $column++){ // for all 16 bytes in the (4x4-byte) State
-               $_SESSION['debug'] .= "state[$row][$column]=" . $state[$row][$column] .
+               $_SESSION['debug'] .= "state na invSubBytes : state[$row][$column]=" . $state[$row][$column] .
                   "-->" . self::$InvS_Box[$state[$row][$column]]."\n";
 				  // here we actually do stuff:
                $state[$row][$column] = self::$InvS_Box[$state[$row][$column]];
@@ -225,12 +219,11 @@
                $temp[$row][$column] = $state[$row][($column+$row)%4];  
             }
          }
-
          //now, copy back the result from temp to state
          for ($row=0; $row<4; $row++){ 
             for ($column=0; $column<4; $column++){ 
                $state[$row][$column] = $temp[$row][$column];
-               $_SESSION['debug'] .= "state[$row][$column]=".$state[$row][$column]."\n";
+               $_SESSION['debug'] .= "ShiftRows : state[$row][$column]=".$state[$row][$column]."\n";
             }
          }         
          return $state;
@@ -238,14 +231,7 @@
 
 	
 	 public function invShiftRows($state)
-      {
-		// Ik heb geen wiskundige kennis, af en toe even hulp nodig.
-			 $_SESSION['debug'] .= "0 mod 4 = ".(0%4)."\n";
-			 $_SESSION['debug'] .= "1 mod 4 = ".(1%4)."\n";
-			 $_SESSION['debug'] .= "2 mod 4 = ".(2%4)."\n";
-			 $_SESSION['debug'] .= "3 mod 4 = ".(3%4)."\n";
-			 
-			 
+      {			 
          $temp = array(); //create temporary array for shifting
          for ($row=0; $row<4; $row++){ 
             for ($column=0; $column<4; $column++){ 
@@ -258,7 +244,7 @@
          for ($row=0; $row<4; $row++){ 
             for ($column=0; $column<4; $column++){ 
                $state[$row][$column] = $temp[$row][$column];
-               $_SESSION['debug'] .= "inv. state[$row][$column]=".$state[$row][$column]."\n";
+               $_SESSION['debug'] .= "state after invShiftRows[$row][$column]=".$state[$row][$column]."\n";
             }
          }         
          return $state;
@@ -310,7 +296,7 @@
             $a = array(4);  // 'a' is a copy of the current column from 's'           
             for ($i=0; $i<4; $i++) $a[$i] = $state[$i][$c]; 
             
-            $_SESSION['debug'] .= "\na is copy column from state: " . implode(",", $a);
+            $_SESSION['debug'] .= "\nMixColumns : a is copy column from state: " . implode(",", $a);
             $state[0][$c] = $mul2[$a[0]] ^ $mul3[$a[1]] ^ $a[2] ^ $a[3]; // 2*a0 + 3*a1 + a2 + a3
             $state[1][$c] = $a[0] ^ $mul2[$a[1]] ^ $mul3[$a[2]] ^ $a[3]; // a0 * 2*a1 + 3*a2 + a3
             $state[2][$c] = $a[0] ^ $a[1] ^ $mul2[$a[2]] ^ $mul3[$a[3]]; // a0 + a1 + 2*a2 + 3*a3
@@ -405,7 +391,7 @@
             $a = array(4);  // 'a' is a copy of the current column from 's'           
             for ($i=0; $i<4; $i++) $a[$i] = $state[$i][$c]; 
             
-            $_SESSION['debug'] .= "\na is copy column from state: " . implode(",", $a);
+            $_SESSION['debug'] .= "\n invMixColumns : a is copy column from state: " . implode(",", $a);
             $state[0][$c] = $mul14[$a[0]] ^ $mul11[$a[1]] ^ $mul13[$a[2]] ^ $mul9[$a[3]]; // 14*a0 + 11*a1 + 13*a2 + 9*a3
             $state[1][$c] = $mul9[$a[0]] ^ $mul14[$a[1]] ^ $mul11[$a[2]] ^ $mul13[$a[3]]; // 9*a0 * 14*a1 + 11*a2 + 13*a3
             $state[2][$c] = $mul13[$a[0]] ^ $mul9[$a[1]] ^ $mul14[$a[2]] ^ $mul11[$a[3]]; // 13*a0 + 9*a1 + 14*a2 + 11*a3
