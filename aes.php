@@ -200,7 +200,7 @@
           $temp = array();
           for($row = 0; $row < 4; $row++){
 	          for($column = 0 ; $column < 4; $column++){
-		          $temp[$row][($row + $column)%4] = $state[$row][$column];
+		          $temp[$row][($column+$row)%4] = $state[$row][$column];
 	          }
           }
 	      //now, copy back the result from temp to state
@@ -210,7 +210,6 @@
 			      $_SESSION['debug'] .= "state[$row][$column]=".$state[$row][$column]."\n";
 		      }
 	      }
-
 	      return $state;
       }
 
