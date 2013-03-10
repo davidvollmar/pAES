@@ -124,6 +124,45 @@ class Aes {
 		array(0x1b, 0x00, 0x00, 0x00),
 		array(0x36, 0x00, 0x00, 0x00) );
 
+	/**
+	 * Encrypten via ECB
+	 *
+	 * todo: testen. Waarschijnlijk gaat er iets mis met (het gebrek aan) padding.
+	 *
+	 * @param $input array De volledige input, dus meerdere blocks
+	 * @param $key array De key om mee te encrypten
+	 * @return array Encrypted data.
+	 */
+	public function ecb_encrypt($input,$key){
+		$IO = new IO();
+		$result = array();
+		for($i = 0  ; $i < input.length(); $i += 256){
+			$data = array_slice($input,$i,$i+256);
+			$data = $IO::
+			$result = array_merge($result,encrypt($data,$key));
+		}
+		return $result;
+	}
+
+	/**
+	 * Decryptie via ECB
+	 *
+	 * todo: testen. Waarschijnlijk gaat er iets mis met (het gebrek aan) padding.
+	 *
+	 * @param $input array De volledige binaire input
+	 * @param $key array De key om mee te decrypten
+	 * @return array De decrypted waarde
+	 */
+	public function ecb_decrypt($input,$key){
+		$result = array();
+		for($i = 0  ; $i < input.length(); $i += 256){
+			$data = array_slice($input,$i,$i+256);
+			$result = array_merge($result,decrypt($data,$key));
+		}
+		return $result;
+	}
+
+
 
 	public function encrypt($input, $key) // $input is de state.
 	{
