@@ -183,6 +183,19 @@ $result = self::addRoundKey($result,$w,0);
          return($result);
       } //end function decrypt
 
+	  public function encrypt_ecb($input, $key)
+	  {
+			
+
+		
+	  }
+	  
+	  public function decrypt_ecb($input,$key)
+	  {
+	  
+	  
+	  }
+	  
       public function subBytes($state)
       {
          for ($row=0; $row<4; $row++){ // for all 16 bytes in the (4x4-byte) State

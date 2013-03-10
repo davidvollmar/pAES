@@ -53,7 +53,14 @@
       
          $in = htmlspecialchars(trim($_POST['input']));
          $operation = htmlspecialchars(trim($_POST['operation']));
-
+		
+		 if( (!isset($_POST['encmode']))) {
+		 $_SESSION['debug'] .= "Choose an encryption mode please.";
+		 }
+		 else if (isset($_POST['encmode'])) {
+		 $_SESSION['debug'] .= "Encryption mode: " . $_POST['encmode'] . "\n";
+		 }
+		
          if ( (!isset($in)) || ($in === NULL) ) {
          $_SESSION['debug'] .= "input not correct";
          }

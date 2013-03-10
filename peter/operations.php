@@ -47,7 +47,29 @@
             <br><br>
             <input type="submit" name="operation" value="encrypt" />
             <input type="submit" name="operation" value="decrypt" />
-
+			
+			<!-- edit peterk -->
+			Select encryptie-mode: 			
+			<select name="encmode">
+			  <option value="Single Block Mode">Single block</option>
+			  <option value="ECB-128">ECB-128</option>
+			  <option value="ECB-192">ECB-192</option>
+			  <option value="ECB-256">ECB-256</option>
+			  <option value="CBC-128">CBC-128</option>
+			  <option value="CBC-192">CBC-192</option>
+			  <option value="CBC-256">CBC-256</option>
+			  <option value="CFB-128">CFB-128</option>
+			  <option value="CFB-192">CFB-192</option>
+			  <option value="CFB-256">CFB-256</option>
+			  <option value="CTR-128">CTR-128</option>
+			  <option value="CTR-192">CTR-192</option>
+			  <option value="CTR-256">CTR-256</option>			  
+			</select>
+			</body>
+			<html>
+			
+			 <!-- einde edit peterk -->
+			
           </form>	      
 
           <br>
