@@ -14,7 +14,7 @@
          <h2>AES</h2>
 	      <p>Deze applicatie geeft inzicht in de werking van AES. 
 	      <br>Op deze pagina kan de uiteindelijke versie van de complete AES implementatie geplaatst worden.</p>
-
+	  
       </div> <!-- end #content -->
 
       <?php include('includes/sidebar.php'); ?>

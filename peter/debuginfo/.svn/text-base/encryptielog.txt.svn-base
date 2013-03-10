@@ -1,0 +1,630 @@
+input = 32 43 f6 a8 88 5a 30 8d 31 31 98 a2 e0 37 07 34
+key = 2b 7e 15 16 28 ae d2 a6 ab f7 15 88 09 cf 4f 3c
+
+output  = 39 25 84 1d 2 dc 9 fb dc 11 85 97 19 6a b 32
+
+
+The key string converted to a byte-array with the decimal representation of the keybytes:
+43,126,21,22,40,174,210,166,171,247,21,136,9,207,79,60
+The input converted to a byte-array with the decimal representation of the ascii-values:
+50,67,246,168,136,90,48,141,49,49,152,162,224,55,7,52
+
+The input converted to a 4x4 state-array
+(50, 136, 49, 224)
+(67, 90, 49, 55)
+(246, 48, 152, 7)
+(168, 141, 162, 52)
+
+The encrypt operation:
+keyExpansion:
+key[0]=2b 7e 15 16 28 ae d2 a6 ab f7 15 88 9 cf 4f 3c 
+key[1]=a0 fa fe 17 88 54 2c b1 23 a3 39 39 2a 6c 76 5 
+key[2]=f2 c2 95 f2 7a 96 b9 43 59 35 80 7a 73 59 f6 7f 
+key[3]=3d 80 47 7d 47 16 fe 3e 1e 23 7e 44 6d 7a 88 3b 
+key[4]=ef 44 a5 41 a8 52 5b 7f b6 71 25 3b db b ad 0 
+key[5]=d4 d1 c6 f8 7c 83 9d 87 ca f2 b8 bc 11 f9 15 bc 
+key[6]=6d 88 a3 7a 11 b 3e fd db f9 86 41 ca 0 93 fd 
+key[7]=4e 54 f7 e 5f 5f c9 f3 84 a6 4f b2 4e a6 dc 4f 
+key[8]=ea d2 73 21 b5 8d ba d2 31 2b f5 60 7f 8d 29 2f 
+key[9]=ac 77 66 f3 19 fa dc 21 28 d1 29 41 57 5c 0 6e 
+key[10]=d0 14 f9 a8 c9 ee 25 89 e1 3f c c8 b6 63 c a6 
+addRoundKey:
+state[0][0]=50 XOR 43=25 in HEX: 19
+state[0][1]=136 XOR 40=160 in HEX: a0
+state[0][2]=49 XOR 171=154 in HEX: 9a
+state[0][3]=224 XOR 9=233 in HEX: e9
+state[1][0]=67 XOR 126=61 in HEX: 3d
+state[1][1]=90 XOR 174=244 in HEX: f4
+state[1][2]=49 XOR 247=198 in HEX: c6
+state[1][3]=55 XOR 207=248 in HEX: f8
+state[2][0]=246 XOR 21=227 in HEX: e3
+state[2][1]=48 XOR 210=226 in HEX: e2
+state[2][2]=152 XOR 21=141 in HEX: 8d
+state[2][3]=7 XOR 79=72 in HEX: 48
+state[3][0]=168 XOR 22=190 in HEX: be
+state[3][1]=141 XOR 166=43 in HEX: 2b
+state[3][2]=162 XOR 136=42 in HEX: 2a
+state[3][3]=52 XOR 60=8 in HEX: 8
+subBytes : state[0][0]=25-->212  in HEX:19 wordt d4
+subBytes : state[0][1]=160-->224  in HEX:a0 wordt e0
+subBytes : state[0][2]=154-->184  in HEX:9a wordt b8
+subBytes : state[0][3]=233-->30  in HEX:e9 wordt 1e
+subBytes : state[1][0]=61-->39  in HEX:3d wordt 27
+subBytes : state[1][1]=244-->191  in HEX:f4 wordt bf
+subBytes : state[1][2]=198-->180  in HEX:c6 wordt b4
+subBytes : state[1][3]=248-->65  in HEX:f8 wordt 41
+subBytes : state[2][0]=227-->17  in HEX:e3 wordt 11
+subBytes : state[2][1]=226-->152  in HEX:e2 wordt 98
+subBytes : state[2][2]=141-->93  in HEX:8d wordt 5d
+subBytes : state[2][3]=72-->82  in HEX:48 wordt 52
+subBytes : state[3][0]=190-->174  in HEX:be wordt ae
+subBytes : state[3][1]=43-->241  in HEX:2b wordt f1
+subBytes : state[3][2]=42-->229  in HEX:2a wordt e5
+subBytes : state[3][3]=8-->48  in HEX:8 wordt 30
+ShiftRows : state[0][0]=212 In HEX : d4
+ShiftRows : state[0][1]=224 In HEX : e0
+ShiftRows : state[0][2]=184 In HEX : b8
+ShiftRows : state[0][3]=30 In HEX : 1e
+ShiftRows : state[1][0]=191 In HEX : bf
+ShiftRows : state[1][1]=180 In HEX : b4
+ShiftRows : state[1][2]=65 In HEX : 41
+ShiftRows : state[1][3]=39 In HEX : 27
+ShiftRows : state[2][0]=93 In HEX : 5d
+ShiftRows : state[2][1]=82 In HEX : 52
+ShiftRows : state[2][2]=17 In HEX : 11
+ShiftRows : state[2][3]=152 In HEX : 98
+ShiftRows : state[3][0]=48 In HEX : 30
+ShiftRows : state[3][1]=174 In HEX : ae
+ShiftRows : state[3][2]=241 In HEX : f1
+ShiftRows : state[3][3]=229 In HEX : e5
+
+MixColumns : a is copy column from state: 212,191,93,48
+resulting column: 4,102,129,229
+MixColumns : a is copy column from state: 224,180,82,174
+resulting column: 224,203,25,154
+MixColumns : a is copy column from state: 184,65,17,241
+resulting column: 72,248,211,122
+MixColumns : a is copy column from state: 30,39,152,229
+resulting column: 40,6,38,76
+addRoundKey:
+state[0][0]=4 XOR 160=164 in HEX: a4
+state[0][1]=224 XOR 136=104 in HEX: 68
+state[0][2]=72 XOR 35=107 in HEX: 6b
+state[0][3]=40 XOR 42=2 in HEX: 2
+state[1][0]=102 XOR 250=156 in HEX: 9c
+state[1][1]=203 XOR 84=159 in HEX: 9f
+state[1][2]=248 XOR 163=91 in HEX: 5b
+state[1][3]=6 XOR 108=106 in HEX: 6a
+state[2][0]=129 XOR 254=127 in HEX: 7f
+state[2][1]=25 XOR 44=53 in HEX: 35
+state[2][2]=211 XOR 57=234 in HEX: ea
+state[2][3]=38 XOR 118=80 in HEX: 50
+state[3][0]=229 XOR 23=242 in HEX: f2
+state[3][1]=154 XOR 177=43 in HEX: 2b
+state[3][2]=122 XOR 57=67 in HEX: 43
+state[3][3]=76 XOR 5=73 in HEX: 49
+subBytes : state[0][0]=164-->73  in HEX:a4 wordt 49
+subBytes : state[0][1]=104-->69  in HEX:68 wordt 45
+subBytes : state[0][2]=107-->127  in HEX:6b wordt 7f
+subBytes : state[0][3]=2-->119  in HEX:2 wordt 77
+subBytes : state[1][0]=156-->222  in HEX:9c wordt de
+subBytes : state[1][1]=159-->219  in HEX:9f wordt db
+subBytes : state[1][2]=91-->57  in HEX:5b wordt 39
+subBytes : state[1][3]=106-->2  in HEX:6a wordt 2
+subBytes : state[2][0]=127-->210  in HEX:7f wordt d2
+subBytes : state[2][1]=53-->150  in HEX:35 wordt 96
+subBytes : state[2][2]=234-->135  in HEX:ea wordt 87
+subBytes : state[2][3]=80-->83  in HEX:50 wordt 53
+subBytes : state[3][0]=242-->137  in HEX:f2 wordt 89
+subBytes : state[3][1]=43-->241  in HEX:2b wordt f1
+subBytes : state[3][2]=67-->26  in HEX:43 wordt 1a
+subBytes : state[3][3]=73-->59  in HEX:49 wordt 3b
+ShiftRows : state[0][0]=73 In HEX : 49
+ShiftRows : state[0][1]=69 In HEX : 45
+ShiftRows : state[0][2]=127 In HEX : 7f
+ShiftRows : state[0][3]=119 In HEX : 77
+ShiftRows : state[1][0]=219 In HEX : db
+ShiftRows : state[1][1]=57 In HEX : 39
+ShiftRows : state[1][2]=2 In HEX : 2
+ShiftRows : state[1][3]=222 In HEX : de
+ShiftRows : state[2][0]=135 In HEX : 87
+ShiftRows : state[2][1]=83 In HEX : 53
+ShiftRows : state[2][2]=210 In HEX : d2
+ShiftRows : state[2][3]=150 In HEX : 96
+ShiftRows : state[3][0]=59 In HEX : 3b
+ShiftRows : state[3][1]=137 In HEX : 89
+ShiftRows : state[3][2]=241 In HEX : f1
+ShiftRows : state[3][3]=26 In HEX : 1a
+
+MixColumns : a is copy column from state: 73,219,135,59
+resulting column: 88,77,202,241
+MixColumns : a is copy column from state: 69,57,83,137
+resulting column: 27,75,90,172
+MixColumns : a is copy column from state: 127,2,210,241
+resulting column: 219,231,202,168
+MixColumns : a is copy column from state: 119,222,150,26
+resulting column: 27,107,176,229
+addRoundKey:
+state[0][0]=88 XOR 242=170 in HEX: aa
+state[0][1]=27 XOR 122=97 in HEX: 61
+state[0][2]=219 XOR 89=130 in HEX: 82
+state[0][3]=27 XOR 115=104 in HEX: 68
+state[1][0]=77 XOR 194=143 in HEX: 8f
+state[1][1]=75 XOR 150=221 in HEX: dd
+state[1][2]=231 XOR 53=210 in HEX: d2
+state[1][3]=107 XOR 89=50 in HEX: 32
+state[2][0]=202 XOR 149=95 in HEX: 5f
+state[2][1]=90 XOR 185=227 in HEX: e3
+state[2][2]=202 XOR 128=74 in HEX: 4a
+state[2][3]=176 XOR 246=70 in HEX: 46
+state[3][0]=241 XOR 242=3 in HEX: 3
+state[3][1]=172 XOR 67=239 in HEX: ef
+state[3][2]=168 XOR 122=210 in HEX: d2
+state[3][3]=229 XOR 127=154 in HEX: 9a
+subBytes : state[0][0]=170-->172  in HEX:aa wordt ac
+subBytes : state[0][1]=97-->239  in HEX:61 wordt ef
+subBytes : state[0][2]=130-->19  in HEX:82 wordt 13
+subBytes : state[0][3]=104-->69  in HEX:68 wordt 45
+subBytes : state[1][0]=143-->115  in HEX:8f wordt 73
+subBytes : state[1][1]=221-->193  in HEX:dd wordt c1
+subBytes : state[1][2]=210-->181  in HEX:d2 wordt b5
+subBytes : state[1][3]=50-->35  in HEX:32 wordt 23
+subBytes : state[2][0]=95-->207  in HEX:5f wordt cf
+subBytes : state[2][1]=227-->17  in HEX:e3 wordt 11
+subBytes : state[2][2]=74-->214  in HEX:4a wordt d6
+subBytes : state[2][3]=70-->90  in HEX:46 wordt 5a
+subBytes : state[3][0]=3-->123  in HEX:3 wordt 7b
+subBytes : state[3][1]=239-->223  in HEX:ef wordt df
+subBytes : state[3][2]=210-->181  in HEX:d2 wordt b5
+subBytes : state[3][3]=154-->184  in HEX:9a wordt b8
+ShiftRows : state[0][0]=172 In HEX : ac
+ShiftRows : state[0][1]=239 In HEX : ef
+ShiftRows : state[0][2]=19 In HEX : 13
+ShiftRows : state[0][3]=69 In HEX : 45
+ShiftRows : state[1][0]=193 In HEX : c1
+ShiftRows : state[1][1]=181 In HEX : b5
+ShiftRows : state[1][2]=35 In HEX : 23
+ShiftRows : state[1][3]=115 In HEX : 73
+ShiftRows : state[2][0]=214 In HEX : d6
+ShiftRows : state[2][1]=90 In HEX : 5a
+ShiftRows : state[2][2]=207 In HEX : cf
+ShiftRows : state[2][3]=17 In HEX : 11
+ShiftRows : state[3][0]=184 In HEX : b8
+ShiftRows : state[3][1]=123 In HEX : 7b
+ShiftRows : state[3][2]=223 In HEX : df
+ShiftRows : state[3][3]=181 In HEX : b5
+
+MixColumns : a is copy column from state: 172,193,214,184
+resulting column: 117,236,9,147
+MixColumns : a is copy column from state: 239,181,90,123
+resulting column: 32,11,99,51
+MixColumns : a is copy column from state: 19,35,207,223
+resulting column: 83,192,207,124
+MixColumns : a is copy column from state: 69,115,17,181
+resulting column: 187,37,208,220
+addRoundKey:
+state[0][0]=117 XOR 61=72 in HEX: 48
+state[0][1]=32 XOR 71=103 in HEX: 67
+state[0][2]=83 XOR 30=77 in HEX: 4d
+state[0][3]=187 XOR 109=214 in HEX: d6
+state[1][0]=236 XOR 128=108 in HEX: 6c
+state[1][1]=11 XOR 22=29 in HEX: 1d
+state[1][2]=192 XOR 35=227 in HEX: e3
+state[1][3]=37 XOR 122=95 in HEX: 5f
+state[2][0]=9 XOR 71=78 in HEX: 4e
+state[2][1]=99 XOR 254=157 in HEX: 9d
+state[2][2]=207 XOR 126=177 in HEX: b1
+state[2][3]=208 XOR 136=88 in HEX: 58
+state[3][0]=147 XOR 125=238 in HEX: ee
+state[3][1]=51 XOR 62=13 in HEX: d
+state[3][2]=124 XOR 68=56 in HEX: 38
+state[3][3]=220 XOR 59=231 in HEX: e7
+subBytes : state[0][0]=72-->82  in HEX:48 wordt 52
+subBytes : state[0][1]=103-->133  in HEX:67 wordt 85
+subBytes : state[0][2]=77-->227  in HEX:4d wordt e3
+subBytes : state[0][3]=214-->246  in HEX:d6 wordt f6
+subBytes : state[1][0]=108-->80  in HEX:6c wordt 50
+subBytes : state[1][1]=29-->164  in HEX:1d wordt a4
+subBytes : state[1][2]=227-->17  in HEX:e3 wordt 11
+subBytes : state[1][3]=95-->207  in HEX:5f wordt cf
+subBytes : state[2][0]=78-->47  in HEX:4e wordt 2f
+subBytes : state[2][1]=157-->94  in HEX:9d wordt 5e
+subBytes : state[2][2]=177-->200  in HEX:b1 wordt c8
+subBytes : state[2][3]=88-->106  in HEX:58 wordt 6a
+subBytes : state[3][0]=238-->40  in HEX:ee wordt 28
+subBytes : state[3][1]=13-->215  in HEX:d wordt d7
+subBytes : state[3][2]=56-->7  in HEX:38 wordt 7
+subBytes : state[3][3]=231-->148  in HEX:e7 wordt 94
+ShiftRows : state[0][0]=82 In HEX : 52
+ShiftRows : state[0][1]=133 In HEX : 85
+ShiftRows : state[0][2]=227 In HEX : e3
+ShiftRows : state[0][3]=246 In HEX : f6
+ShiftRows : state[1][0]=164 In HEX : a4
+ShiftRows : state[1][1]=17 In HEX : 11
+ShiftRows : state[1][2]=207 In HEX : cf
+ShiftRows : state[1][3]=80 In HEX : 50
+ShiftRows : state[2][0]=200 In HEX : c8
+ShiftRows : state[2][1]=106 In HEX : 6a
+ShiftRows : state[2][2]=47 In HEX : 2f
+ShiftRows : state[2][3]=94 In HEX : 5e
+ShiftRows : state[3][0]=148 In HEX : 94
+ShiftRows : state[3][1]=40 In HEX : 28
+ShiftRows : state[3][2]=215 In HEX : d7
+ShiftRows : state[3][3]=7 In HEX : 7
+
+MixColumns : a is copy column from state: 82,164,200,148
+resulting column: 15,214,218,169
+MixColumns : a is copy column from state: 133,17,106,40
+resulting column: 96,49,56,191
+MixColumns : a is copy column from state: 227,207,47,215
+resulting column: 111,192,16,107
+MixColumns : a is copy column from state: 246,80,94,7
+resulting column: 94,179,19,1
+addRoundKey:
+state[0][0]=15 XOR 239=224 in HEX: e0
+state[0][1]=96 XOR 168=200 in HEX: c8
+state[0][2]=111 XOR 182=217 in HEX: d9
+state[0][3]=94 XOR 219=133 in HEX: 85
+state[1][0]=214 XOR 68=146 in HEX: 92
+state[1][1]=49 XOR 82=99 in HEX: 63
+state[1][2]=192 XOR 113=177 in HEX: b1
+state[1][3]=179 XOR 11=184 in HEX: b8
+state[2][0]=218 XOR 165=127 in HEX: 7f
+state[2][1]=56 XOR 91=99 in HEX: 63
+state[2][2]=16 XOR 37=53 in HEX: 35
+state[2][3]=19 XOR 173=190 in HEX: be
+state[3][0]=169 XOR 65=232 in HEX: e8
+state[3][1]=191 XOR 127=192 in HEX: c0
+state[3][2]=107 XOR 59=80 in HEX: 50
+state[3][3]=1 XOR 0=1 in HEX: 1
+subBytes : state[0][0]=224-->225  in HEX:e0 wordt e1
+subBytes : state[0][1]=200-->232  in HEX:c8 wordt e8
+subBytes : state[0][2]=217-->53  in HEX:d9 wordt 35
+subBytes : state[0][3]=133-->151  in HEX:85 wordt 97
+subBytes : state[1][0]=146-->79  in HEX:92 wordt 4f
+subBytes : state[1][1]=99-->251  in HEX:63 wordt fb
+subBytes : state[1][2]=177-->200  in HEX:b1 wordt c8
+subBytes : state[1][3]=184-->108  in HEX:b8 wordt 6c
+subBytes : state[2][0]=127-->210  in HEX:7f wordt d2
+subBytes : state[2][1]=99-->251  in HEX:63 wordt fb
+subBytes : state[2][2]=53-->150  in HEX:35 wordt 96
+subBytes : state[2][3]=190-->174  in HEX:be wordt ae
+subBytes : state[3][0]=232-->155  in HEX:e8 wordt 9b
+subBytes : state[3][1]=192-->186  in HEX:c0 wordt ba
+subBytes : state[3][2]=80-->83  in HEX:50 wordt 53
+subBytes : state[3][3]=1-->124  in HEX:1 wordt 7c
+ShiftRows : state[0][0]=225 In HEX : e1
+ShiftRows : state[0][1]=232 In HEX : e8
+ShiftRows : state[0][2]=53 In HEX : 35
+ShiftRows : state[0][3]=151 In HEX : 97
+ShiftRows : state[1][0]=251 In HEX : fb
+ShiftRows : state[1][1]=200 In HEX : c8
+ShiftRows : state[1][2]=108 In HEX : 6c
+ShiftRows : state[1][3]=79 In HEX : 4f
+ShiftRows : state[2][0]=150 In HEX : 96
+ShiftRows : state[2][1]=174 In HEX : ae
+ShiftRows : state[2][2]=210 In HEX : d2
+ShiftRows : state[2][3]=251 In HEX : fb
+ShiftRows : state[3][0]=124 In HEX : 7c
+ShiftRows : state[3][1]=155 In HEX : 9b
+ShiftRows : state[3][2]=186 In HEX : ba
+ShiftRows : state[3][3]=83 In HEX : 53
+
+MixColumns : a is copy column from state: 225,251,150,124
+resulting column: 37,209,169,173
+MixColumns : a is copy column from state: 232,200,174,155
+resulting column: 189,17,209,104
+MixColumns : a is copy column from state: 53,108,210,186
+resulting column: 182,58,51,142
+MixColumns : a is copy column from state: 151,79,251,83
+resulting column: 76,76,192,176
+addRoundKey:
+state[0][0]=37 XOR 212=241 in HEX: f1
+state[0][1]=189 XOR 124=193 in HEX: c1
+state[0][2]=182 XOR 202=124 in HEX: 7c
+state[0][3]=76 XOR 17=93 in HEX: 5d
+state[1][0]=209 XOR 209=0 in HEX: 0
+state[1][1]=17 XOR 131=146 in HEX: 92
+state[1][2]=58 XOR 242=200 in HEX: c8
+state[1][3]=76 XOR 249=181 in HEX: b5
+state[2][0]=169 XOR 198=111 in HEX: 6f
+state[2][1]=209 XOR 157=76 in HEX: 4c
+state[2][2]=51 XOR 184=139 in HEX: 8b
+state[2][3]=192 XOR 21=213 in HEX: d5
+state[3][0]=173 XOR 248=85 in HEX: 55
+state[3][1]=104 XOR 135=239 in HEX: ef
+state[3][2]=142 XOR 188=50 in HEX: 32
+state[3][3]=176 XOR 188=12 in HEX: c
+subBytes : state[0][0]=241-->161  in HEX:f1 wordt a1
+subBytes : state[0][1]=193-->120  in HEX:c1 wordt 78
+subBytes : state[0][2]=124-->16  in HEX:7c wordt 10
+subBytes : state[0][3]=93-->76  in HEX:5d wordt 4c
+subBytes : state[1][0]=0-->99  in HEX:0 wordt 63
+subBytes : state[1][1]=146-->79  in HEX:92 wordt 4f
+subBytes : state[1][2]=200-->232  in HEX:c8 wordt e8
+subBytes : state[1][3]=181-->213  in HEX:b5 wordt d5
+subBytes : state[2][0]=111-->168  in HEX:6f wordt a8
+subBytes : state[2][1]=76-->41  in HEX:4c wordt 29
+subBytes : state[2][2]=139-->61  in HEX:8b wordt 3d
+subBytes : state[2][3]=213-->3  in HEX:d5 wordt 3
+subBytes : state[3][0]=85-->252  in HEX:55 wordt fc
+subBytes : state[3][1]=239-->223  in HEX:ef wordt df
+subBytes : state[3][2]=50-->35  in HEX:32 wordt 23
+subBytes : state[3][3]=12-->254  in HEX:c wordt fe
+ShiftRows : state[0][0]=161 In HEX : a1
+ShiftRows : state[0][1]=120 In HEX : 78
+ShiftRows : state[0][2]=16 In HEX : 10
+ShiftRows : state[0][3]=76 In HEX : 4c
+ShiftRows : state[1][0]=79 In HEX : 4f
+ShiftRows : state[1][1]=232 In HEX : e8
+ShiftRows : state[1][2]=213 In HEX : d5
+ShiftRows : state[1][3]=99 In HEX : 63
+ShiftRows : state[2][0]=61 In HEX : 3d
+ShiftRows : state[2][1]=3 In HEX : 3
+ShiftRows : state[2][2]=168 In HEX : a8
+ShiftRows : state[2][3]=41 In HEX : 29
+ShiftRows : state[3][0]=254 In HEX : fe
+ShiftRows : state[3][1]=252 In HEX : fc
+ShiftRows : state[3][2]=223 In HEX : df
+ShiftRows : state[3][3]=35 In HEX : 23
+
+MixColumns : a is copy column from state: 161,79,61,254
+resulting column: 75,134,141,109
+MixColumns : a is copy column from state: 120,232,3,252
+resulting column: 44,74,137,128
+MixColumns : a is copy column from state: 16,213,168,223
+resulting column: 51,157,244,232
+MixColumns : a is copy column from state: 76,99,41,35
+resulting column: 55,210,24,216
+addRoundKey:
+state[0][0]=75 XOR 109=38 in HEX: 26
+state[0][1]=44 XOR 17=61 in HEX: 3d
+state[0][2]=51 XOR 219=232 in HEX: e8
+state[0][3]=55 XOR 202=253 in HEX: fd
+state[1][0]=134 XOR 136=14 in HEX: e
+state[1][1]=74 XOR 11=65 in HEX: 41
+state[1][2]=157 XOR 249=100 in HEX: 64
+state[1][3]=210 XOR 0=210 in HEX: d2
+state[2][0]=141 XOR 163=46 in HEX: 2e
+state[2][1]=137 XOR 62=183 in HEX: b7
+state[2][2]=244 XOR 134=114 in HEX: 72
+state[2][3]=24 XOR 147=139 in HEX: 8b
+state[3][0]=109 XOR 122=23 in HEX: 17
+state[3][1]=128 XOR 253=125 in HEX: 7d
+state[3][2]=232 XOR 65=169 in HEX: a9
+state[3][3]=216 XOR 253=37 in HEX: 25
+subBytes : state[0][0]=38-->247  in HEX:26 wordt f7
+subBytes : state[0][1]=61-->39  in HEX:3d wordt 27
+subBytes : state[0][2]=232-->155  in HEX:e8 wordt 9b
+subBytes : state[0][3]=253-->84  in HEX:fd wordt 54
+subBytes : state[1][0]=14-->171  in HEX:e wordt ab
+subBytes : state[1][1]=65-->131  in HEX:41 wordt 83
+subBytes : state[1][2]=100-->67  in HEX:64 wordt 43
+subBytes : state[1][3]=210-->181  in HEX:d2 wordt b5
+subBytes : state[2][0]=46-->49  in HEX:2e wordt 31
+subBytes : state[2][1]=183-->169  in HEX:b7 wordt a9
+subBytes : state[2][2]=114-->64  in HEX:72 wordt 40
+subBytes : state[2][3]=139-->61  in HEX:8b wordt 3d
+subBytes : state[3][0]=23-->240  in HEX:17 wordt f0
+subBytes : state[3][1]=125-->255  in HEX:7d wordt ff
+subBytes : state[3][2]=169-->211  in HEX:a9 wordt d3
+subBytes : state[3][3]=37-->63  in HEX:25 wordt 3f
+ShiftRows : state[0][0]=247 In HEX : f7
+ShiftRows : state[0][1]=39 In HEX : 27
+ShiftRows : state[0][2]=155 In HEX : 9b
+ShiftRows : state[0][3]=84 In HEX : 54
+ShiftRows : state[1][0]=131 In HEX : 83
+ShiftRows : state[1][1]=67 In HEX : 43
+ShiftRows : state[1][2]=181 In HEX : b5
+ShiftRows : state[1][3]=171 In HEX : ab
+ShiftRows : state[2][0]=64 In HEX : 40
+ShiftRows : state[2][1]=61 In HEX : 3d
+ShiftRows : state[2][2]=49 In HEX : 31
+ShiftRows : state[2][3]=169 In HEX : a9
+ShiftRows : state[3][0]=63 In HEX : 3f
+ShiftRows : state[3][1]=240 In HEX : f0
+ShiftRows : state[3][2]=255 In HEX : ff
+ShiftRows : state[3][3]=211 In HEX : d3
+
+MixColumns : a is copy column from state: 247,131,64,63
+resulting column: 20,21,181,191
+MixColumns : a is copy column from state: 39,67,61,240
+resulting column: 70,22,21,236
+MixColumns : a is copy column from state: 155,181,49,255
+resulting column: 39,70,86,215
+MixColumns : a is copy column from state: 84,171,169,211
+resulting column: 52,42,216,67
+addRoundKey:
+state[0][0]=20 XOR 78=90 in HEX: 5a
+state[0][1]=70 XOR 95=25 in HEX: 19
+state[0][2]=39 XOR 132=163 in HEX: a3
+state[0][3]=52 XOR 78=122 in HEX: 7a
+state[1][0]=21 XOR 84=65 in HEX: 41
+state[1][1]=22 XOR 95=73 in HEX: 49
+state[1][2]=70 XOR 166=224 in HEX: e0
+state[1][3]=42 XOR 166=140 in HEX: 8c
+state[2][0]=181 XOR 247=66 in HEX: 42
+state[2][1]=21 XOR 201=220 in HEX: dc
+state[2][2]=86 XOR 79=25 in HEX: 19
+state[2][3]=216 XOR 220=4 in HEX: 4
+state[3][0]=191 XOR 14=177 in HEX: b1
+state[3][1]=236 XOR 243=31 in HEX: 1f
+state[3][2]=215 XOR 178=101 in HEX: 65
+state[3][3]=67 XOR 79=12 in HEX: c
+subBytes : state[0][0]=90-->190  in HEX:5a wordt be
+subBytes : state[0][1]=25-->212  in HEX:19 wordt d4
+subBytes : state[0][2]=163-->10  in HEX:a3 wordt a
+subBytes : state[0][3]=122-->218  in HEX:7a wordt da
+subBytes : state[1][0]=65-->131  in HEX:41 wordt 83
+subBytes : state[1][1]=73-->59  in HEX:49 wordt 3b
+subBytes : state[1][2]=224-->225  in HEX:e0 wordt e1
+subBytes : state[1][3]=140-->100  in HEX:8c wordt 64
+subBytes : state[2][0]=66-->44  in HEX:42 wordt 2c
+subBytes : state[2][1]=220-->134  in HEX:dc wordt 86
+subBytes : state[2][2]=25-->212  in HEX:19 wordt d4
+subBytes : state[2][3]=4-->242  in HEX:4 wordt f2
+subBytes : state[3][0]=177-->200  in HEX:b1 wordt c8
+subBytes : state[3][1]=31-->192  in HEX:1f wordt c0
+subBytes : state[3][2]=101-->77  in HEX:65 wordt 4d
+subBytes : state[3][3]=12-->254  in HEX:c wordt fe
+ShiftRows : state[0][0]=190 In HEX : be
+ShiftRows : state[0][1]=212 In HEX : d4
+ShiftRows : state[0][2]=10 In HEX : a
+ShiftRows : state[0][3]=218 In HEX : da
+ShiftRows : state[1][0]=59 In HEX : 3b
+ShiftRows : state[1][1]=225 In HEX : e1
+ShiftRows : state[1][2]=100 In HEX : 64
+ShiftRows : state[1][3]=131 In HEX : 83
+ShiftRows : state[2][0]=212 In HEX : d4
+ShiftRows : state[2][1]=242 In HEX : f2
+ShiftRows : state[2][2]=44 In HEX : 2c
+ShiftRows : state[2][3]=134 In HEX : 86
+ShiftRows : state[3][0]=254 In HEX : fe
+ShiftRows : state[3][1]=200 In HEX : c8
+ShiftRows : state[3][2]=192 In HEX : c0
+ShiftRows : state[3][3]=77 In HEX : 4d
+
+MixColumns : a is copy column from state: 190,59,212,254
+resulting column: 0,81,47,209
+MixColumns : a is copy column from state: 212,225,242,200
+resulting column: 177,200,137,255
+MixColumns : a is copy column from state: 10,100,44,192
+resulting column: 84,118,109,205
+MixColumns : a is copy column from state: 218,131,134,77
+resulting column: 250,27,153,234
+addRoundKey:
+state[0][0]=0 XOR 234=234 in HEX: ea
+state[0][1]=177 XOR 181=4 in HEX: 4
+state[0][2]=84 XOR 49=101 in HEX: 65
+state[0][3]=250 XOR 127=133 in HEX: 85
+state[1][0]=81 XOR 210=131 in HEX: 83
+state[1][1]=200 XOR 141=69 in HEX: 45
+state[1][2]=118 XOR 43=93 in HEX: 5d
+state[1][3]=27 XOR 141=150 in HEX: 96
+state[2][0]=47 XOR 115=92 in HEX: 5c
+state[2][1]=137 XOR 186=51 in HEX: 33
+state[2][2]=109 XOR 245=152 in HEX: 98
+state[2][3]=153 XOR 41=176 in HEX: b0
+state[3][0]=209 XOR 33=240 in HEX: f0
+state[3][1]=255 XOR 210=45 in HEX: 2d
+state[3][2]=205 XOR 96=173 in HEX: ad
+state[3][3]=234 XOR 47=197 in HEX: c5
+subBytes : state[0][0]=234-->135  in HEX:ea wordt 87
+subBytes : state[0][1]=4-->242  in HEX:4 wordt f2
+subBytes : state[0][2]=101-->77  in HEX:65 wordt 4d
+subBytes : state[0][3]=133-->151  in HEX:85 wordt 97
+subBytes : state[1][0]=131-->236  in HEX:83 wordt ec
+subBytes : state[1][1]=69-->110  in HEX:45 wordt 6e
+subBytes : state[1][2]=93-->76  in HEX:5d wordt 4c
+subBytes : state[1][3]=150-->144  in HEX:96 wordt 90
+subBytes : state[2][0]=92-->74  in HEX:5c wordt 4a
+subBytes : state[2][1]=51-->195  in HEX:33 wordt c3
+subBytes : state[2][2]=152-->70  in HEX:98 wordt 46
+subBytes : state[2][3]=176-->231  in HEX:b0 wordt e7
+subBytes : state[3][0]=240-->140  in HEX:f0 wordt 8c
+subBytes : state[3][1]=45-->216  in HEX:2d wordt d8
+subBytes : state[3][2]=173-->149  in HEX:ad wordt 95
+subBytes : state[3][3]=197-->166  in HEX:c5 wordt a6
+ShiftRows : state[0][0]=135 In HEX : 87
+ShiftRows : state[0][1]=242 In HEX : f2
+ShiftRows : state[0][2]=77 In HEX : 4d
+ShiftRows : state[0][3]=151 In HEX : 97
+ShiftRows : state[1][0]=110 In HEX : 6e
+ShiftRows : state[1][1]=76 In HEX : 4c
+ShiftRows : state[1][2]=144 In HEX : 90
+ShiftRows : state[1][3]=236 In HEX : ec
+ShiftRows : state[2][0]=70 In HEX : 46
+ShiftRows : state[2][1]=231 In HEX : e7
+ShiftRows : state[2][2]=74 In HEX : 4a
+ShiftRows : state[2][3]=195 In HEX : c3
+ShiftRows : state[3][0]=166 In HEX : a6
+ShiftRows : state[3][1]=140 In HEX : 8c
+ShiftRows : state[3][2]=216 In HEX : d8
+ShiftRows : state[3][3]=149 In HEX : 95
+
+MixColumns : a is copy column from state: 135,110,70,166
+resulting column: 71,55,148,237
+MixColumns : a is copy column from state: 242,76,231,140
+resulting column: 64,212,228,165
+MixColumns : a is copy column from state: 77,144,74,216
+resulting column: 163,112,58,166
+MixColumns : a is copy column from state: 151,236,195,149
+resulting column: 76,159,66,188
+addRoundKey:
+state[0][0]=71 XOR 172=235 in HEX: eb
+state[0][1]=64 XOR 25=89 in HEX: 59
+state[0][2]=163 XOR 40=139 in HEX: 8b
+state[0][3]=76 XOR 87=27 in HEX: 1b
+state[1][0]=55 XOR 119=64 in HEX: 40
+state[1][1]=212 XOR 250=46 in HEX: 2e
+state[1][2]=112 XOR 209=161 in HEX: a1
+state[1][3]=159 XOR 92=195 in HEX: c3
+state[2][0]=148 XOR 102=242 in HEX: f2
+state[2][1]=228 XOR 220=56 in HEX: 38
+state[2][2]=58 XOR 41=19 in HEX: 13
+state[2][3]=66 XOR 0=66 in HEX: 42
+state[3][0]=237 XOR 243=30 in HEX: 1e
+state[3][1]=165 XOR 33=132 in HEX: 84
+state[3][2]=166 XOR 65=231 in HEX: e7
+state[3][3]=188 XOR 110=210 in HEX: d2
+subBytes : state[0][0]=235-->233  in HEX:eb wordt e9
+subBytes : state[0][1]=89-->203  in HEX:59 wordt cb
+subBytes : state[0][2]=139-->61  in HEX:8b wordt 3d
+subBytes : state[0][3]=27-->175  in HEX:1b wordt af
+subBytes : state[1][0]=64-->9  in HEX:40 wordt 9
+subBytes : state[1][1]=46-->49  in HEX:2e wordt 31
+subBytes : state[1][2]=161-->50  in HEX:a1 wordt 32
+subBytes : state[1][3]=195-->46  in HEX:c3 wordt 2e
+subBytes : state[2][0]=242-->137  in HEX:f2 wordt 89
+subBytes : state[2][1]=56-->7  in HEX:38 wordt 7
+subBytes : state[2][2]=19-->125  in HEX:13 wordt 7d
+subBytes : state[2][3]=66-->44  in HEX:42 wordt 2c
+subBytes : state[3][0]=30-->114  in HEX:1e wordt 72
+subBytes : state[3][1]=132-->95  in HEX:84 wordt 5f
+subBytes : state[3][2]=231-->148  in HEX:e7 wordt 94
+subBytes : state[3][3]=210-->181  in HEX:d2 wordt b5
+ShiftRows : state[0][0]=233 In HEX : e9
+ShiftRows : state[0][1]=203 In HEX : cb
+ShiftRows : state[0][2]=61 In HEX : 3d
+ShiftRows : state[0][3]=175 In HEX : af
+ShiftRows : state[1][0]=49 In HEX : 31
+ShiftRows : state[1][1]=50 In HEX : 32
+ShiftRows : state[1][2]=46 In HEX : 2e
+ShiftRows : state[1][3]=9 In HEX : 9
+ShiftRows : state[2][0]=125 In HEX : 7d
+ShiftRows : state[2][1]=44 In HEX : 2c
+ShiftRows : state[2][2]=137 In HEX : 89
+ShiftRows : state[2][3]=7 In HEX : 7
+ShiftRows : state[3][0]=181 In HEX : b5
+ShiftRows : state[3][1]=114 In HEX : 72
+ShiftRows : state[3][2]=95 In HEX : 5f
+ShiftRows : state[3][3]=148 In HEX : 94
+
+addRoundKey:
+state[0][0]=233 XOR 208=57 in HEX: 39
+state[0][1]=203 XOR 201=2 in HEX: 2
+state[0][2]=61 XOR 225=220 in HEX: dc
+state[0][3]=175 XOR 182=25 in HEX: 19
+state[1][0]=49 XOR 20=37 in HEX: 25
+state[1][1]=50 XOR 238=220 in HEX: dc
+state[1][2]=46 XOR 63=17 in HEX: 11
+state[1][3]=9 XOR 99=106 in HEX: 6a
+state[2][0]=125 XOR 249=132 in HEX: 84
+state[2][1]=44 XOR 37=9 in HEX: 9
+state[2][2]=137 XOR 12=133 in HEX: 85
+state[2][3]=7 XOR 12=11 in HEX: b
+state[3][0]=181 XOR 168=29 in HEX: 1d
+state[3][1]=114 XOR 137=251 in HEX: fb
+state[3][2]=95 XOR 200=151 in HEX: 97
+state[3][3]=148 XOR 166=50 in HEX: 32
+Encrypted result :
+(57, 2, 220, 25)
+(37, 220, 17, 106)
+(132, 9, 133, 11)
+(29, 251, 151, 50)
+
+The result converted back to a linear decimal representation:
+57,37,132,29,2,220,9,251,220,17,133,151,25,106,11,50
+
+The hexadecimal result of the encrypt operation:
+39 25 84 1d 2 dc 9 fb dc 11 85 97 19 6a b 32 

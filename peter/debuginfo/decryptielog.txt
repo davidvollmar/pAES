@@ -1,0 +1,816 @@
+Start :
+The key string converted to a byte-array with the decimal representation of the keybytes:
+43,126,21,22,40,174,210,166,171,247,21,136,9,207,79,60
+
+input = 32 43 f6 a8 88 5a 30 8d 31 31 98 a2 e0 37 07 34
+
+The input converted to a byte-array with the decimal representation of the ascii-values:
+50,67,246,168,136,90,48,141,49,49,152,162,224,55,7,52
+
+Encrypted result :
+(57, 2, 220, 25)
+(37, 220, 17, 106)
+(132, 9, 133, 11)
+(29, 251, 151, 50)
+
+The result converted back to a linear decimal representation:
+57,37,132,29,2,220,9,251,220,17,133,151,25,106,11,50
+
+The hexadecimal result of the encrypt operation:
+39 25 84 1d 2 dc 9 fb dc 11 85 97 19 6a b 32 
+
+-------------------
+Decryptie :
+
+The key string converted to a byte-array with the decimal representation of the keybytes:
+43,126,21,22,40,174,210,166,171,247,21,136,9,207,79,60
+The input converted to a byte-array with the decimal representation of the ascii-values:
+57,37,132,29,45,201,251,220,17,133,151,25,106,179,2,0
+39,25,84, 1d,2d,
+
+
+The input converted to a 4x4 state-array
+(57, 45, 17, 106)
+(37, 201, 133, 179)
+(132, 251, 151, 2)
+(29, 220, 25, 0)
+
+The decrypt operation:
+keyExpansion:
+key[0]=2b 7e 15 16 28 ae d2 a6 ab f7 15 88 9 cf 4f 3c 
+key[1]=a0 fa fe 17 88 54 2c b1 23 a3 39 39 2a 6c 76 5 
+key[2]=f2 c2 95 f2 7a 96 b9 43 59 35 80 7a 73 59 f6 7f 
+key[3]=3d 80 47 7d 47 16 fe 3e 1e 23 7e 44 6d 7a 88 3b 
+key[4]=ef 44 a5 41 a8 52 5b 7f b6 71 25 3b db b ad 0 
+key[5]=d4 d1 c6 f8 7c 83 9d 87 ca f2 b8 bc 11 f9 15 bc 
+key[6]=6d 88 a3 7a 11 b 3e fd db f9 86 41 ca 0 93 fd 
+key[7]=4e 54 f7 e 5f 5f c9 f3 84 a6 4f b2 4e a6 dc 4f 
+key[8]=ea d2 73 21 b5 8d ba d2 31 2b f5 60 7f 8d 29 2f 
+key[9]=ac 77 66 f3 19 fa dc 21 28 d1 29 41 57 5c 0 6e 
+key[10]=d0 14 f9 a8 c9 ee 25 89 e1 3f c c8 b6 63 c a6 
+addRoundKey:
+state[0][0]=57 XOR 208=233 in HEX: e9
+state[0][1]=45 XOR 201=228 in HEX: e4
+state[0][2]=17 XOR 225=240 in HEX: f0
+state[0][3]=106 XOR 182=220 in HEX: dc
+state[1][0]=37 XOR 20=49 in HEX: 31
+state[1][1]=201 XOR 238=39 in HEX: 27
+state[1][2]=133 XOR 63=186 in HEX: ba
+state[1][3]=179 XOR 99=208 in HEX: d0
+state[2][0]=132 XOR 249=125 in HEX: 7d
+state[2][1]=251 XOR 37=222 in HEX: de
+state[2][2]=151 XOR 12=155 in HEX: 9b
+state[2][3]=2 XOR 12=14 in HEX: e
+state[3][0]=29 XOR 168=181 in HEX: b5
+state[3][1]=220 XOR 137=85 in HEX: 55
+state[3][2]=25 XOR 200=209 in HEX: d1
+state[3][3]=0 XOR 166=166 in HEX: a6
+
+state before invShiftRows[0][0]=233
+state before invShiftRows[0][1]=228
+state before invShiftRows[0][2]=240
+state before invShiftRows[0][3]=220
+state before invShiftRows[1][0]=49
+state before invShiftRows[1][1]=39
+state before invShiftRows[1][2]=186
+state before invShiftRows[1][3]=208
+state before invShiftRows[2][0]=125
+state before invShiftRows[2][1]=222
+state before invShiftRows[2][2]=155
+state before invShiftRows[2][3]=14
+state before invShiftRows[3][0]=181
+state before invShiftRows[3][1]=85
+state before invShiftRows[3][2]=209
+state before invShiftRows[3][3]=166
+state after invShiftRows[0][0]=233
+state after invShiftRows[0][1]=228
+state after invShiftRows[0][2]=240
+state after invShiftRows[0][3]=220
+state after invShiftRows[1][0]=208
+state after invShiftRows[1][1]=49
+state after invShiftRows[1][2]=39
+state after invShiftRows[1][3]=186
+state after invShiftRows[2][0]=155
+state after invShiftRows[2][1]=14
+state after invShiftRows[2][2]=125
+state after invShiftRows[2][3]=222
+state after invShiftRows[3][0]=85
+state after invShiftRows[3][1]=209
+state after invShiftRows[3][2]=166
+state after invShiftRows[3][3]=181
+state na invSubBytes : state[0][0]=233-->235
+state na invSubBytes : state[0][1]=228-->174
+state na invSubBytes : state[0][2]=240-->23
+state na invSubBytes : state[0][3]=220-->147
+state na invSubBytes : state[1][0]=208-->96
+state na invSubBytes : state[1][1]=49-->46
+state na invSubBytes : state[1][2]=39-->61
+state na invSubBytes : state[1][3]=186-->192
+state na invSubBytes : state[2][0]=155-->232
+state na invSubBytes : state[2][1]=14-->215
+state na invSubBytes : state[2][2]=125-->19
+state na invSubBytes : state[2][3]=222-->156
+state na invSubBytes : state[3][0]=85-->237
+state na invSubBytes : state[3][1]=209-->81
+state na invSubBytes : state[3][2]=166-->197
+state na invSubBytes : state[3][3]=181-->210
+
+addRoundKey:
+state[0][0]=235 XOR 172=71 in HEX: 47
+state[0][1]=174 XOR 25=183 in HEX: b7
+state[0][2]=23 XOR 40=63 in HEX: 3f
+state[0][3]=147 XOR 87=196 in HEX: c4
+state[1][0]=96 XOR 119=23 in HEX: 17
+state[1][1]=46 XOR 250=212 in HEX: d4
+state[1][2]=61 XOR 209=236 in HEX: ec
+state[1][3]=192 XOR 92=156 in HEX: 9c
+state[2][0]=232 XOR 102=142 in HEX: 8e
+state[2][1]=215 XOR 220=11 in HEX: b
+state[2][2]=19 XOR 41=58 in HEX: 3a
+state[2][3]=156 XOR 0=156 in HEX: 9c
+state[3][0]=237 XOR 243=30 in HEX: 1e
+state[3][1]=81 XOR 33=112 in HEX: 70
+state[3][2]=197 XOR 65=132 in HEX: 84
+state[3][3]=210 XOR 110=188 in HEX: bc
+
+ invMixColumns : a is copy column from state: 71,23,142,30
+resulting column: 116,128,38,18
+ invMixColumns : a is copy column from state: 183,212,11,112
+resulting column: 111,15,227,155
+ invMixColumns : a is copy column from state: 63,236,58,132
+resulting column: 190,200,97,122
+ invMixColumns : a is copy column from state: 196,156,156,188
+resulting column: 154,137,50,89
+state before invShiftRows[0][0]=116
+state before invShiftRows[0][1]=111
+state before invShiftRows[0][2]=190
+state before invShiftRows[0][3]=154
+state before invShiftRows[1][0]=128
+state before invShiftRows[1][1]=15
+state before invShiftRows[1][2]=200
+state before invShiftRows[1][3]=137
+state before invShiftRows[2][0]=38
+state before invShiftRows[2][1]=227
+state before invShiftRows[2][2]=97
+state before invShiftRows[2][3]=50
+state before invShiftRows[3][0]=18
+state before invShiftRows[3][1]=155
+state before invShiftRows[3][2]=122
+state before invShiftRows[3][3]=89
+state after invShiftRows[0][0]=116
+state after invShiftRows[0][1]=111
+state after invShiftRows[0][2]=190
+state after invShiftRows[0][3]=154
+state after invShiftRows[1][0]=137
+state after invShiftRows[1][1]=128
+state after invShiftRows[1][2]=15
+state after invShiftRows[1][3]=200
+state after invShiftRows[2][0]=97
+state after invShiftRows[2][1]=50
+state after invShiftRows[2][2]=38
+state after invShiftRows[2][3]=227
+state after invShiftRows[3][0]=155
+state after invShiftRows[3][1]=122
+state after invShiftRows[3][2]=89
+state after invShiftRows[3][3]=18
+state na invSubBytes : state[0][0]=116-->202
+state na invSubBytes : state[0][1]=111-->6
+state na invSubBytes : state[0][2]=190-->90
+state na invSubBytes : state[0][3]=154-->55
+state na invSubBytes : state[1][0]=137-->242
+state na invSubBytes : state[1][1]=128-->58
+state na invSubBytes : state[1][2]=15-->251
+state na invSubBytes : state[1][3]=200-->177
+state na invSubBytes : state[2][0]=97-->216
+state na invSubBytes : state[2][1]=50-->161
+state na invSubBytes : state[2][2]=38-->35
+state na invSubBytes : state[2][3]=227-->77
+state na invSubBytes : state[3][0]=155-->232
+state na invSubBytes : state[3][1]=122-->189
+state na invSubBytes : state[3][2]=89-->21
+state na invSubBytes : state[3][3]=18-->57
+
+addRoundKey:
+state[0][0]=202 XOR 234=32 in HEX: 20
+state[0][1]=6 XOR 181=179 in HEX: b3
+state[0][2]=90 XOR 49=107 in HEX: 6b
+state[0][3]=55 XOR 127=72 in HEX: 48
+state[1][0]=242 XOR 210=32 in HEX: 20
+state[1][1]=58 XOR 141=183 in HEX: b7
+state[1][2]=251 XOR 43=208 in HEX: d0
+state[1][3]=177 XOR 141=60 in HEX: 3c
+state[2][0]=216 XOR 115=171 in HEX: ab
+state[2][1]=161 XOR 186=27 in HEX: 1b
+state[2][2]=35 XOR 245=214 in HEX: d6
+state[2][3]=77 XOR 41=100 in HEX: 64
+state[3][0]=232 XOR 33=201 in HEX: c9
+state[3][1]=189 XOR 210=111 in HEX: 6f
+state[3][2]=21 XOR 96=117 in HEX: 75
+state[3][3]=57 XOR 47=22 in HEX: 16
+
+ invMixColumns : a is copy column from state: 32,32,171,201
+resulting column: 101,251,42,214
+ invMixColumns : a is copy column from state: 179,183,27,111
+resulting column: 240,100,184,92
+ invMixColumns : a is copy column from state: 107,208,214,117
+resulting column: 28,166,145,51
+ invMixColumns : a is copy column from state: 72,60,100,22
+resulting column: 38,18,6,52
+state before invShiftRows[0][0]=101
+state before invShiftRows[0][1]=240
+state before invShiftRows[0][2]=28
+state before invShiftRows[0][3]=38
+state before invShiftRows[1][0]=251
+state before invShiftRows[1][1]=100
+state before invShiftRows[1][2]=166
+state before invShiftRows[1][3]=18
+state before invShiftRows[2][0]=42
+state before invShiftRows[2][1]=184
+state before invShiftRows[2][2]=145
+state before invShiftRows[2][3]=6
+state before invShiftRows[3][0]=214
+state before invShiftRows[3][1]=92
+state before invShiftRows[3][2]=51
+state before invShiftRows[3][3]=52
+state after invShiftRows[0][0]=101
+state after invShiftRows[0][1]=240
+state after invShiftRows[0][2]=28
+state after invShiftRows[0][3]=38
+state after invShiftRows[1][0]=18
+state after invShiftRows[1][1]=251
+state after invShiftRows[1][2]=100
+state after invShiftRows[1][3]=166
+state after invShiftRows[2][0]=145
+state after invShiftRows[2][1]=6
+state after invShiftRows[2][2]=42
+state after invShiftRows[2][3]=184
+state after invShiftRows[3][0]=92
+state after invShiftRows[3][1]=51
+state after invShiftRows[3][2]=52
+state after invShiftRows[3][3]=214
+state na invSubBytes : state[0][0]=101-->188
+state na invSubBytes : state[0][1]=240-->23
+state na invSubBytes : state[0][2]=28-->196
+state na invSubBytes : state[0][3]=38-->35
+state na invSubBytes : state[1][0]=18-->57
+state na invSubBytes : state[1][1]=251-->99
+state na invSubBytes : state[1][2]=100-->140
+state na invSubBytes : state[1][3]=166-->197
+state na invSubBytes : state[2][0]=145-->172
+state na invSubBytes : state[2][1]=6-->165
+state na invSubBytes : state[2][2]=42-->149
+state na invSubBytes : state[2][3]=184-->154
+state na invSubBytes : state[3][0]=92-->167
+state na invSubBytes : state[3][1]=51-->102
+state na invSubBytes : state[3][2]=52-->40
+state na invSubBytes : state[3][3]=214-->74
+
+addRoundKey:
+state[0][0]=188 XOR 78=242 in HEX: f2
+state[0][1]=23 XOR 95=72 in HEX: 48
+state[0][2]=196 XOR 132=64 in HEX: 40
+state[0][3]=35 XOR 78=109 in HEX: 6d
+state[1][0]=57 XOR 84=109 in HEX: 6d
+state[1][1]=99 XOR 95=60 in HEX: 3c
+state[1][2]=140 XOR 166=42 in HEX: 2a
+state[1][3]=197 XOR 166=99 in HEX: 63
+state[2][0]=172 XOR 247=91 in HEX: 5b
+state[2][1]=165 XOR 201=108 in HEX: 6c
+state[2][2]=149 XOR 79=218 in HEX: da
+state[2][3]=154 XOR 220=70 in HEX: 46
+state[3][0]=167 XOR 14=169 in HEX: a9
+state[3][1]=102 XOR 243=149 in HEX: 95
+state[3][2]=40 XOR 178=154 in HEX: 9a
+state[3][3]=74 XOR 79=5 in HEX: 5
+
+ invMixColumns : a is copy column from state: 242,109,91,169
+resulting column: 109,20,30,10
+ invMixColumns : a is copy column from state: 72,60,108,149
+resulting column: 185,135,156,47
+ invMixColumns : a is copy column from state: 64,42,218,154
+resulting column: 171,70,101,162
+ invMixColumns : a is copy column from state: 109,99,70,5
+resulting column: 206,185,127,69
+state before invShiftRows[0][0]=109
+state before invShiftRows[0][1]=185
+state before invShiftRows[0][2]=171
+state before invShiftRows[0][3]=206
+state before invShiftRows[1][0]=20
+state before invShiftRows[1][1]=135
+state before invShiftRows[1][2]=70
+state before invShiftRows[1][3]=185
+state before invShiftRows[2][0]=30
+state before invShiftRows[2][1]=156
+state before invShiftRows[2][2]=101
+state before invShiftRows[2][3]=127
+state before invShiftRows[3][0]=10
+state before invShiftRows[3][1]=47
+state before invShiftRows[3][2]=162
+state before invShiftRows[3][3]=69
+state after invShiftRows[0][0]=109
+state after invShiftRows[0][1]=185
+state after invShiftRows[0][2]=171
+state after invShiftRows[0][3]=206
+state after invShiftRows[1][0]=185
+state after invShiftRows[1][1]=20
+state after invShiftRows[1][2]=135
+state after invShiftRows[1][3]=70
+state after invShiftRows[2][0]=101
+state after invShiftRows[2][1]=127
+state after invShiftRows[2][2]=30
+state after invShiftRows[2][3]=156
+state after invShiftRows[3][0]=47
+state after invShiftRows[3][1]=162
+state after invShiftRows[3][2]=69
+state after invShiftRows[3][3]=10
+state na invSubBytes : state[0][0]=109-->179
+state na invSubBytes : state[0][1]=185-->219
+state na invSubBytes : state[0][2]=171-->14
+state na invSubBytes : state[0][3]=206-->236
+state na invSubBytes : state[1][0]=185-->219
+state na invSubBytes : state[1][1]=20-->155
+state na invSubBytes : state[1][2]=135-->234
+state na invSubBytes : state[1][3]=70-->152
+state na invSubBytes : state[2][0]=101-->188
+state na invSubBytes : state[2][1]=127-->107
+state na invSubBytes : state[2][2]=30-->233
+state na invSubBytes : state[2][3]=156-->28
+state na invSubBytes : state[3][0]=47-->78
+state na invSubBytes : state[3][1]=162-->26
+state na invSubBytes : state[3][2]=69-->104
+state na invSubBytes : state[3][3]=10-->163
+
+addRoundKey:
+state[0][0]=179 XOR 109=222 in HEX: de
+state[0][1]=219 XOR 17=202 in HEX: ca
+state[0][2]=14 XOR 219=213 in HEX: d5
+state[0][3]=236 XOR 202=38 in HEX: 26
+state[1][0]=219 XOR 136=83 in HEX: 53
+state[1][1]=155 XOR 11=144 in HEX: 90
+state[1][2]=234 XOR 249=19 in HEX: 13
+state[1][3]=152 XOR 0=152 in HEX: 98
+state[2][0]=188 XOR 163=31 in HEX: 1f
+state[2][1]=107 XOR 62=85 in HEX: 55
+state[2][2]=233 XOR 134=111 in HEX: 6f
+state[2][3]=28 XOR 147=143 in HEX: 8f
+state[3][0]=78 XOR 122=52 in HEX: 34
+state[3][1]=26 XOR 253=231 in HEX: e7
+state[3][2]=104 XOR 65=41 in HEX: 29
+state[3][3]=163 XOR 253=94 in HEX: 5e
+
+ invMixColumns : a is copy column from state: 222,83,31,52
+resulting column: 23,173,129,157
+ invMixColumns : a is copy column from state: 202,144,85,231
+resulting column: 221,47,137,147
+ invMixColumns : a is copy column from state: 213,19,111,41
+resulting column: 112,239,209,206
+ invMixColumns : a is copy column from state: 38,152,143,94
+resulting column: 233,185,158,161
+state before invShiftRows[0][0]=23
+state before invShiftRows[0][1]=221
+state before invShiftRows[0][2]=112
+state before invShiftRows[0][3]=233
+state before invShiftRows[1][0]=173
+state before invShiftRows[1][1]=47
+state before invShiftRows[1][2]=239
+state before invShiftRows[1][3]=185
+state before invShiftRows[2][0]=129
+state before invShiftRows[2][1]=137
+state before invShiftRows[2][2]=209
+state before invShiftRows[2][3]=158
+state before invShiftRows[3][0]=157
+state before invShiftRows[3][1]=147
+state before invShiftRows[3][2]=206
+state before invShiftRows[3][3]=161
+state after invShiftRows[0][0]=23
+state after invShiftRows[0][1]=221
+state after invShiftRows[0][2]=112
+state after invShiftRows[0][3]=233
+state after invShiftRows[1][0]=185
+state after invShiftRows[1][1]=173
+state after invShiftRows[1][2]=47
+state after invShiftRows[1][3]=239
+state after invShiftRows[2][0]=209
+state after invShiftRows[2][1]=158
+state after invShiftRows[2][2]=129
+state after invShiftRows[2][3]=137
+state after invShiftRows[3][0]=147
+state after invShiftRows[3][1]=206
+state after invShiftRows[3][2]=161
+state after invShiftRows[3][3]=157
+state na invSubBytes : state[0][0]=23-->135
+state na invSubBytes : state[0][1]=221-->201
+state na invSubBytes : state[0][2]=112-->208
+state na invSubBytes : state[0][3]=233-->235
+state na invSubBytes : state[1][0]=185-->219
+state na invSubBytes : state[1][1]=173-->24
+state na invSubBytes : state[1][2]=47-->78
+state na invSubBytes : state[1][3]=239-->97
+state na invSubBytes : state[2][0]=209-->81
+state na invSubBytes : state[2][1]=158-->223
+state na invSubBytes : state[2][2]=129-->145
+state na invSubBytes : state[2][3]=137-->242
+state na invSubBytes : state[3][0]=147-->34
+state na invSubBytes : state[3][1]=206-->236
+state na invSubBytes : state[3][2]=161-->241
+state na invSubBytes : state[3][3]=157-->117
+
+addRoundKey:
+state[0][0]=135 XOR 212=83 in HEX: 53
+state[0][1]=201 XOR 124=181 in HEX: b5
+state[0][2]=208 XOR 202=26 in HEX: 1a
+state[0][3]=235 XOR 17=250 in HEX: fa
+state[1][0]=219 XOR 209=10 in HEX: a
+state[1][1]=24 XOR 131=155 in HEX: 9b
+state[1][2]=78 XOR 242=188 in HEX: bc
+state[1][3]=97 XOR 249=152 in HEX: 98
+state[2][0]=81 XOR 198=151 in HEX: 97
+state[2][1]=223 XOR 157=66 in HEX: 42
+state[2][2]=145 XOR 184=41 in HEX: 29
+state[2][3]=242 XOR 21=231 in HEX: e7
+state[3][0]=34 XOR 248=218 in HEX: da
+state[3][1]=236 XOR 135=107 in HEX: 6b
+state[3][2]=241 XOR 188=77 in HEX: 4d
+state[3][3]=117 XOR 188=201 in HEX: c9
+
+ invMixColumns : a is copy column from state: 83,10,151,218
+resulting column: 104,242,132,10
+ invMixColumns : a is copy column from state: 181,155,66,107
+resulting column: 39,224,222,30
+ invMixColumns : a is copy column from state: 26,188,41,77
+resulting column: 9,236,165,130
+ invMixColumns : a is copy column from state: 250,152,231,201
+resulting column: 80,35,213,234
+state before invShiftRows[0][0]=104
+state before invShiftRows[0][1]=39
+state before invShiftRows[0][2]=9
+state before invShiftRows[0][3]=80
+state before invShiftRows[1][0]=242
+state before invShiftRows[1][1]=224
+state before invShiftRows[1][2]=236
+state before invShiftRows[1][3]=35
+state before invShiftRows[2][0]=132
+state before invShiftRows[2][1]=222
+state before invShiftRows[2][2]=165
+state before invShiftRows[2][3]=213
+state before invShiftRows[3][0]=10
+state before invShiftRows[3][1]=30
+state before invShiftRows[3][2]=130
+state before invShiftRows[3][3]=234
+state after invShiftRows[0][0]=104
+state after invShiftRows[0][1]=39
+state after invShiftRows[0][2]=9
+state after invShiftRows[0][3]=80
+state after invShiftRows[1][0]=35
+state after invShiftRows[1][1]=242
+state after invShiftRows[1][2]=224
+state after invShiftRows[1][3]=236
+state after invShiftRows[2][0]=165
+state after invShiftRows[2][1]=213
+state after invShiftRows[2][2]=132
+state after invShiftRows[2][3]=222
+state after invShiftRows[3][0]=30
+state after invShiftRows[3][1]=130
+state after invShiftRows[3][2]=234
+state after invShiftRows[3][3]=10
+state na invSubBytes : state[0][0]=104-->247
+state na invSubBytes : state[0][1]=39-->61
+state na invSubBytes : state[0][2]=9-->64
+state na invSubBytes : state[0][3]=80-->108
+state na invSubBytes : state[1][0]=35-->50
+state na invSubBytes : state[1][1]=242-->4
+state na invSubBytes : state[1][2]=224-->160
+state na invSubBytes : state[1][3]=236-->131
+state na invSubBytes : state[2][0]=165-->41
+state na invSubBytes : state[2][1]=213-->181
+state na invSubBytes : state[2][2]=132-->79
+state na invSubBytes : state[2][3]=222-->156
+state na invSubBytes : state[3][0]=30-->233
+state na invSubBytes : state[3][1]=130-->17
+state na invSubBytes : state[3][2]=234-->187
+state na invSubBytes : state[3][3]=10-->163
+
+addRoundKey:
+state[0][0]=247 XOR 239=24 in HEX: 18
+state[0][1]=61 XOR 168=149 in HEX: 95
+state[0][2]=64 XOR 182=246 in HEX: f6
+state[0][3]=108 XOR 219=183 in HEX: b7
+state[1][0]=50 XOR 68=118 in HEX: 76
+state[1][1]=4 XOR 82=86 in HEX: 56
+state[1][2]=160 XOR 113=209 in HEX: d1
+state[1][3]=131 XOR 11=136 in HEX: 88
+state[2][0]=41 XOR 165=140 in HEX: 8c
+state[2][1]=181 XOR 91=238 in HEX: ee
+state[2][2]=79 XOR 37=106 in HEX: 6a
+state[2][3]=156 XOR 173=49 in HEX: 31
+state[3][0]=233 XOR 65=168 in HEX: a8
+state[3][1]=17 XOR 127=110 in HEX: 6e
+state[3][2]=187 XOR 59=128 in HEX: 80
+state[3][3]=163 XOR 0=163 in HEX: a3
+
+ invMixColumns : a is copy column from state: 24,118,140,168
+resulting column: 142,224,142,170
+ invMixColumns : a is copy column from state: 149,86,238,110
+resulting column: 146,176,111,14
+ invMixColumns : a is copy column from state: 246,209,106,128
+resulting column: 1,28,28,204
+ invMixColumns : a is copy column from state: 183,136,49,163
+resulting column: 85,255,146,149
+state before invShiftRows[0][0]=142
+state before invShiftRows[0][1]=146
+state before invShiftRows[0][2]=1
+state before invShiftRows[0][3]=85
+state before invShiftRows[1][0]=224
+state before invShiftRows[1][1]=176
+state before invShiftRows[1][2]=28
+state before invShiftRows[1][3]=255
+state before invShiftRows[2][0]=142
+state before invShiftRows[2][1]=111
+state before invShiftRows[2][2]=28
+state before invShiftRows[2][3]=146
+state before invShiftRows[3][0]=170
+state before invShiftRows[3][1]=14
+state before invShiftRows[3][2]=204
+state before invShiftRows[3][3]=149
+state after invShiftRows[0][0]=142
+state after invShiftRows[0][1]=146
+state after invShiftRows[0][2]=1
+state after invShiftRows[0][3]=85
+state after invShiftRows[1][0]=255
+state after invShiftRows[1][1]=224
+state after invShiftRows[1][2]=176
+state after invShiftRows[1][3]=28
+state after invShiftRows[2][0]=28
+state after invShiftRows[2][1]=146
+state after invShiftRows[2][2]=142
+state after invShiftRows[2][3]=111
+state after invShiftRows[3][0]=14
+state after invShiftRows[3][1]=204
+state after invShiftRows[3][2]=149
+state after invShiftRows[3][3]=170
+state na invSubBytes : state[0][0]=142-->230
+state na invSubBytes : state[0][1]=146-->116
+state na invSubBytes : state[0][2]=1-->9
+state na invSubBytes : state[0][3]=85-->237
+state na invSubBytes : state[1][0]=255-->125
+state na invSubBytes : state[1][1]=224-->160
+state na invSubBytes : state[1][2]=176-->252
+state na invSubBytes : state[1][3]=28-->196
+state na invSubBytes : state[2][0]=28-->196
+state na invSubBytes : state[2][1]=146-->116
+state na invSubBytes : state[2][2]=142-->230
+state na invSubBytes : state[2][3]=111-->6
+state na invSubBytes : state[3][0]=14-->215
+state na invSubBytes : state[3][1]=204-->39
+state na invSubBytes : state[3][2]=149-->173
+state na invSubBytes : state[3][3]=170-->98
+
+addRoundKey:
+state[0][0]=230 XOR 61=219 in HEX: db
+state[0][1]=116 XOR 71=51 in HEX: 33
+state[0][2]=9 XOR 30=23 in HEX: 17
+state[0][3]=237 XOR 109=128 in HEX: 80
+state[1][0]=125 XOR 128=253 in HEX: fd
+state[1][1]=160 XOR 22=182 in HEX: b6
+state[1][2]=252 XOR 35=223 in HEX: df
+state[1][3]=196 XOR 122=190 in HEX: be
+state[2][0]=196 XOR 71=131 in HEX: 83
+state[2][1]=116 XOR 254=138 in HEX: 8a
+state[2][2]=230 XOR 126=152 in HEX: 98
+state[2][3]=6 XOR 136=142 in HEX: 8e
+state[3][0]=215 XOR 125=170 in HEX: aa
+state[3][1]=39 XOR 62=25 in HEX: 19
+state[3][2]=173 XOR 68=233 in HEX: e9
+state[3][3]=98 XOR 59=89 in HEX: 59
+
+ invMixColumns : a is copy column from state: 219,253,131,170
+resulting column: 155,49,221,120
+ invMixColumns : a is copy column from state: 51,182,138,25
+resulting column: 86,226,195,97
+ invMixColumns : a is copy column from state: 23,223,152,233
+resulting column: 144,143,118,208
+ invMixColumns : a is copy column from state: 128,190,142,89
+resulting column: 36,143,227,161
+state before invShiftRows[0][0]=155
+state before invShiftRows[0][1]=86
+state before invShiftRows[0][2]=144
+state before invShiftRows[0][3]=36
+state before invShiftRows[1][0]=49
+state before invShiftRows[1][1]=226
+state before invShiftRows[1][2]=143
+state before invShiftRows[1][3]=143
+state before invShiftRows[2][0]=221
+state before invShiftRows[2][1]=195
+state before invShiftRows[2][2]=118
+state before invShiftRows[2][3]=227
+state before invShiftRows[3][0]=120
+state before invShiftRows[3][1]=97
+state before invShiftRows[3][2]=208
+state before invShiftRows[3][3]=161
+state after invShiftRows[0][0]=155
+state after invShiftRows[0][1]=86
+state after invShiftRows[0][2]=144
+state after invShiftRows[0][3]=36
+state after invShiftRows[1][0]=143
+state after invShiftRows[1][1]=49
+state after invShiftRows[1][2]=226
+state after invShiftRows[1][3]=143
+state after invShiftRows[2][0]=118
+state after invShiftRows[2][1]=227
+state after invShiftRows[2][2]=221
+state after invShiftRows[2][3]=195
+state after invShiftRows[3][0]=97
+state after invShiftRows[3][1]=208
+state after invShiftRows[3][2]=161
+state after invShiftRows[3][3]=120
+state na invSubBytes : state[0][0]=155-->232
+state na invSubBytes : state[0][1]=86-->185
+state na invSubBytes : state[0][2]=144-->150
+state na invSubBytes : state[0][3]=36-->166
+state na invSubBytes : state[1][0]=143-->115
+state na invSubBytes : state[1][1]=49-->46
+state na invSubBytes : state[1][2]=226-->59
+state na invSubBytes : state[1][3]=143-->115
+state na invSubBytes : state[2][0]=118-->15
+state na invSubBytes : state[2][1]=227-->77
+state na invSubBytes : state[2][2]=221-->201
+state na invSubBytes : state[2][3]=195-->51
+state na invSubBytes : state[3][0]=97-->216
+state na invSubBytes : state[3][1]=208-->96
+state na invSubBytes : state[3][2]=161-->241
+state na invSubBytes : state[3][3]=120-->193
+
+addRoundKey:
+state[0][0]=232 XOR 242=26 in HEX: 1a
+state[0][1]=185 XOR 122=195 in HEX: c3
+state[0][2]=150 XOR 89=207 in HEX: cf
+state[0][3]=166 XOR 115=213 in HEX: d5
+state[1][0]=115 XOR 194=177 in HEX: b1
+state[1][1]=46 XOR 150=184 in HEX: b8
+state[1][2]=59 XOR 53=14 in HEX: e
+state[1][3]=115 XOR 89=42 in HEX: 2a
+state[2][0]=15 XOR 149=154 in HEX: 9a
+state[2][1]=77 XOR 185=244 in HEX: f4
+state[2][2]=201 XOR 128=73 in HEX: 49
+state[2][3]=51 XOR 246=197 in HEX: c5
+state[3][0]=216 XOR 242=42 in HEX: 2a
+state[3][1]=96 XOR 67=35 in HEX: 23
+state[3][2]=241 XOR 122=139 in HEX: 8b
+state[3][3]=193 XOR 127=190 in HEX: be
+
+ invMixColumns : a is copy column from state: 26,177,154,42
+resulting column: 162,126,20,211
+ invMixColumns : a is copy column from state: 195,184,244,35
+resulting column: 82,193,38,25
+ invMixColumns : a is copy column from state: 207,14,73,139
+resulting column: 99,185,227,58
+ invMixColumns : a is copy column from state: 213,42,197,190
+resulting column: 184,65,187,198
+state before invShiftRows[0][0]=162
+state before invShiftRows[0][1]=82
+state before invShiftRows[0][2]=99
+state before invShiftRows[0][3]=184
+state before invShiftRows[1][0]=126
+state before invShiftRows[1][1]=193
+state before invShiftRows[1][2]=185
+state before invShiftRows[1][3]=65
+state before invShiftRows[2][0]=20
+state before invShiftRows[2][1]=38
+state before invShiftRows[2][2]=227
+state before invShiftRows[2][3]=187
+state before invShiftRows[3][0]=211
+state before invShiftRows[3][1]=25
+state before invShiftRows[3][2]=58
+state before invShiftRows[3][3]=198
+state after invShiftRows[0][0]=162
+state after invShiftRows[0][1]=82
+state after invShiftRows[0][2]=99
+state after invShiftRows[0][3]=184
+state after invShiftRows[1][0]=65
+state after invShiftRows[1][1]=126
+state after invShiftRows[1][2]=193
+state after invShiftRows[1][3]=185
+state after invShiftRows[2][0]=227
+state after invShiftRows[2][1]=187
+state after invShiftRows[2][2]=20
+state after invShiftRows[2][3]=38
+state after invShiftRows[3][0]=25
+state after invShiftRows[3][1]=58
+state after invShiftRows[3][2]=198
+state after invShiftRows[3][3]=211
+state na invSubBytes : state[0][0]=162-->26
+state na invSubBytes : state[0][1]=82-->72
+state na invSubBytes : state[0][2]=99-->0
+state na invSubBytes : state[0][3]=184-->154
+state na invSubBytes : state[1][0]=65-->248
+state na invSubBytes : state[1][1]=126-->138
+state na invSubBytes : state[1][2]=193-->221
+state na invSubBytes : state[1][3]=185-->219
+state na invSubBytes : state[2][0]=227-->77
+state na invSubBytes : state[2][1]=187-->254
+state na invSubBytes : state[2][2]=20-->155
+state na invSubBytes : state[2][3]=38-->35
+state na invSubBytes : state[3][0]=25-->142
+state na invSubBytes : state[3][1]=58-->162
+state na invSubBytes : state[3][2]=198-->199
+state na invSubBytes : state[3][3]=211-->169
+
+addRoundKey:
+state[0][0]=26 XOR 160=186 in HEX: ba
+state[0][1]=72 XOR 136=192 in HEX: c0
+state[0][2]=0 XOR 35=35 in HEX: 23
+state[0][3]=154 XOR 42=176 in HEX: b0
+state[1][0]=248 XOR 250=2 in HEX: 2
+state[1][1]=138 XOR 84=222 in HEX: de
+state[1][2]=221 XOR 163=126 in HEX: 7e
+state[1][3]=219 XOR 108=183 in HEX: b7
+state[2][0]=77 XOR 254=179 in HEX: b3
+state[2][1]=254 XOR 44=210 in HEX: d2
+state[2][2]=155 XOR 57=162 in HEX: a2
+state[2][3]=35 XOR 118=85 in HEX: 55
+state[3][0]=142 XOR 23=153 in HEX: 99
+state[3][1]=162 XOR 177=19 in HEX: 13
+state[3][2]=199 XOR 57=254 in HEX: fe
+state[3][3]=169 XOR 5=172 in HEX: ac
+
+ invMixColumns : a is copy column from state: 186,2,179,153
+resulting column: 155,79,173,235
+ invMixColumns : a is copy column from state: 192,222,210,19
+resulting column: 201,162,126,202
+ invMixColumns : a is copy column from state: 35,126,162,254
+resulting column: 162,226,33,96
+ invMixColumns : a is copy column from state: 176,183,85,172
+resulting column: 72,75,74,183
+state before invShiftRows[0][0]=155
+state before invShiftRows[0][1]=201
+state before invShiftRows[0][2]=162
+state before invShiftRows[0][3]=72
+state before invShiftRows[1][0]=79
+state before invShiftRows[1][1]=162
+state before invShiftRows[1][2]=226
+state before invShiftRows[1][3]=75
+state before invShiftRows[2][0]=173
+state before invShiftRows[2][1]=126
+state before invShiftRows[2][2]=33
+state before invShiftRows[2][3]=74
+state before invShiftRows[3][0]=235
+state before invShiftRows[3][1]=202
+state before invShiftRows[3][2]=96
+state before invShiftRows[3][3]=183
+state after invShiftRows[0][0]=155
+state after invShiftRows[0][1]=201
+state after invShiftRows[0][2]=162
+state after invShiftRows[0][3]=72
+state after invShiftRows[1][0]=75
+state after invShiftRows[1][1]=79
+state after invShiftRows[1][2]=162
+state after invShiftRows[1][3]=226
+state after invShiftRows[2][0]=33
+state after invShiftRows[2][1]=74
+state after invShiftRows[2][2]=173
+state after invShiftRows[2][3]=126
+state after invShiftRows[3][0]=202
+state after invShiftRows[3][1]=96
+state after invShiftRows[3][2]=183
+state after invShiftRows[3][3]=235
+state na invSubBytes : state[0][0]=155-->232
+state na invSubBytes : state[0][1]=201-->18
+state na invSubBytes : state[0][2]=162-->26
+state na invSubBytes : state[0][3]=72-->212
+state na invSubBytes : state[1][0]=75-->204
+state na invSubBytes : state[1][1]=79-->146
+state na invSubBytes : state[1][2]=162-->26
+state na invSubBytes : state[1][3]=226-->59
+state na invSubBytes : state[2][0]=33-->123
+state na invSubBytes : state[2][1]=74-->92
+state na invSubBytes : state[2][2]=173-->24
+state na invSubBytes : state[2][3]=126-->138
+state na invSubBytes : state[3][0]=202-->16
+state na invSubBytes : state[3][1]=96-->144
+state na invSubBytes : state[3][2]=183-->32
+state na invSubBytes : state[3][3]=235-->60
+
+addRoundKey:
+state[0][0]=232 XOR 43=195 in HEX: c3
+state[0][1]=18 XOR 40=58 in HEX: 3a
+state[0][2]=26 XOR 171=177 in HEX: b1
+state[0][3]=212 XOR 9=221 in HEX: dd
+state[1][0]=204 XOR 126=178 in HEX: b2
+state[1][1]=146 XOR 174=60 in HEX: 3c
+state[1][2]=26 XOR 247=237 in HEX: ed
+state[1][3]=59 XOR 207=244 in HEX: f4
+state[2][0]=123 XOR 21=110 in HEX: 6e
+state[2][1]=92 XOR 210=142 in HEX: 8e
+state[2][2]=24 XOR 21=13 in HEX: d
+state[2][3]=138 XOR 79=197 in HEX: c5
+state[3][0]=16 XOR 22=6 in HEX: 6
+state[3][1]=144 XOR 166=54 in HEX: 36
+state[3][2]=32 XOR 136=168 in HEX: a8
+state[3][3]=60 XOR 60=0 in HEX: 0
+Finished decrypting!
+
+The result converted back to a linear decimal representation:
+195,178,110,6,58,60,142,54,177,237,13,168,221,244,197,0
+
+The hexadecimal result of the decrypt operation:
+c3 b2 6e 6 3a 3c 8e 36 b1 ed d a8 dd f4 c5 0 

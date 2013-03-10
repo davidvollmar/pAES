@@ -87,6 +87,7 @@
    
                   $_SESSION['debug'] .= "The input converted to a byte-array with the decimal representation of the ascii-values:";
                   $_SESSION['debug'] .= "\n". implode(",", $bytearray) ."\n";
+				  $_SESSION['debug'] .= implode(",",dechex($bytearray)); // edit peterk
                   $retv = $bytearray;
                   $correct = true;
                }
@@ -109,7 +110,7 @@
                for ($i=$index; $i<16; $i++) $bytearray[$i] = 0;
    
                $_SESSION['debug'] .= "The input converted to a byte-array with the decimal representation of the ascii-values:";
-               $_SESSION['debug'] .= "\n". implode(",", $bytearray) ."\n";
+               $_SESSION['debug'] .= "\n". implode(",", $bytearray) ."\n";		   
                $retv = $bytearray;
                $correct = true;
             }
