@@ -1,7 +1,7 @@
 <?php
 session_start();
 include_once("io.php"); //io operations for reading input to bytearrays and visa versa
-
+error_reporting(-1);//show all errors
 $_SESSION['debug'] = "";
 $_SESSION['input'] = htmlspecialchars(trim($_POST['input']));
 $_SESSION['key'] = htmlspecialchars(trim($_POST['key']));
@@ -41,10 +41,12 @@ else
 			$result=$aesops->addRoundKey($state, $w, 0); //add roundkey 0 for this example
 			break;
 		case "encrypt":
-			$result=$aesops->encrypt($state, $key);
-			break;
+			//$result=$aesops->encrypt($state, $key);
+			$result = $aesops->ecb_encrypt($state,$key);
+            break;
 		case "decrypt":
-			$result=$aesops->decrypt($state, $key);
+			//$result=$aesops->decrypt($state, $key);
+            $result = $aesops->ecb_decrypt($state,$key);
 			break;
 		default:
 			$_SESSION['debug'] .= "\n Error, operation not valid";
@@ -134,12 +136,15 @@ class Aes {
 	 * @return array Encrypted data.
 	 */
 	public function ecb_encrypt($input,$key){
-		$IO = new IO();
+		$IO = new ioOperations();
 		$result = array();
-		for($i = 0  ; $i < input.length(); $i += 256){
+        $max = sizeof($input);
+		for($i = 0  ; $i < $max; $i += 256){
 			$data = array_slice($input,$i,$i+256);
-			$data = $IO::
-			$result = array_merge($result,encrypt($data,$key));
+            // van een los bytearray blob naar een state, en dan weer terug naar een bytearray met goede padding.
+			//$data = $IO->getState($data);
+            //$data = $IO->convertStateToByteArray($data);
+			$result = array_merge($result,self::encrypt($data,$key));
 		}
 		return $result;
 	}
@@ -155,9 +160,10 @@ class Aes {
 	 */
 	public function ecb_decrypt($input,$key){
 		$result = array();
-		for($i = 0  ; $i < input.length(); $i += 256){
+        $max = sizeof($input);
+		for($i = 0  ; $i < $max; $i += 256){
 			$data = array_slice($input,$i,$i+256);
-			$result = array_merge($result,decrypt($data,$key));
+			$result = array_merge($result,self::decrypt($data,$key));
 		}
 		return $result;
 	}
