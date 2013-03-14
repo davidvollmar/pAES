@@ -112,7 +112,7 @@ class ioOperations {
 					$bytearray[$index] = hexdec($ss);
 					$index++;
 				}
-
+                // padding aanvullen tot 16.
 				for ($i=$index; $i<16; $i++) $bytearray[$i] = 0;
 
 				$_SESSION['debug'] .= "The input converted to a byte-array with the decimal representation of the ascii-values:";
