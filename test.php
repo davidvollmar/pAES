@@ -12,8 +12,10 @@ $in = "f7 a3 32 16 f7 a3 32 16 f7 a3 32 16 f7 a3 32 16 f7 a3 32 16";
 
 $byteArray = magic1($in);
 $byteArray2 = $IO->fillPadding($byteArray);
-
-echo(implode(",",$byteArray)."\n");
+$blaat = magic2($byteArray);
+echo(implode(",",$blaat)."\n");
+echo("<br />");
+echo(implode(",",$byteArray2)."\n");
 echo("<br />");
 echo(implode(",",$byteArray2)."\n");
 echo("<br />");
@@ -41,6 +43,10 @@ function magic1($in){
 	return $byteArray;
 }
 
+function magic2($byteArray){
+	$IO = new ioOperations();
+	return $IO->getStates($byteArray);
+}
 
 
 

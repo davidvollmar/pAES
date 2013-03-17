@@ -187,12 +187,12 @@ class ioOperations {
 	 * @return array states
 	 */
 	public function getStates($byteArray){
-		$byteArray = fillPadding($byteArray);
+		$byteArray = self::fillPadding($byteArray);
 		$len = count($byteArray);
 		$states = array();
 		$counter = 0;
 		for($i = 0 ; $i < $len ; $i+=16){
-			$states[$counter] = getState(array_slice($byteArray,$i,16));
+			$states[$counter] = self::getState(array_slice($byteArray,$i,16));
 			$counter++;
 		}
 		return $states;
@@ -200,7 +200,7 @@ class ioOperations {
 
 	public function convertStateToByteArray($result)
 	{
-		$output = array();
+		//$output = array(); <- als je die vantevoren de declareerd gaat't allemaal nie goed nie
 		for ($i=0; $i<16; $i++)
 		{
 			//for example state[2][1] should go to output-byte 6, so out[6]=state[6%4][floor(6/4)]
