@@ -47,8 +47,13 @@ class ioOperations {
 		}
 	}
 
-	public function getByteArrayFromInput()
-	{  $correct = false;
+	/**
+	 * A do to many function
+	 * DV: now also padds with strings.length > 16
+	 * @return array|string
+	 */
+	public function getByteArrayFromInput(){
+		$correct = false;
 		$retv = "";
 
 		$in = htmlspecialchars(trim($_POST['input']));
@@ -84,22 +89,22 @@ class ioOperations {
 					//read posted data for state data and for data-format (ascii or hex)
 
 					// convert to a decimal representation of the ascii-values, C for unsigned char
-					$bytearray = unpack('C*', $in);
+					$byteArray = unpack('C*', $in);
 
 					// make bytearray start at index 0, because result from unpack starts at index 1
-					$bytearray = array_merge($bytearray);
+					$byteArray = array_merge($byteArray);
 					if (strlen($in)<16){ //pad with null values
-						for ($i=strlen($in); $i<16; $i++) $bytearray[$i] = 0;
+						for ($i=strlen($in); $i<16; $i++) $byteArray[$i] = 0;
 					}
 
 					$_SESSION['debug'] .= "The input converted to a byte-array with the decimal representation of the ascii-values:";
-					$_SESSION['debug'] .= "\n". implode(",", $bytearray) ."\n";
-					$retv = $bytearray;
+					$_SESSION['debug'] .= "\n". implode(",", $byteArray) ."\n";
+					$retv = $byteArray;
 					$correct = true;
 				}
 			}
 			else if ($_POST['format']=='hex'){
-				//$_SESSION['debug'] .= "\nhex format not supported yet, sorry!";
+				$byteArray = array();
 				//removing spaces and 0x hex format specifiers is not fool-proof but gets normal input to just hex numbers
 				$in = str_replace(' ', '', $in); //remove all spaces from string
 				$in = str_replace('\x', '', $in); // remove all 0x hex format specifiers
@@ -107,17 +112,14 @@ class ioOperations {
 				$index = 0;
 				for ($i=0; $i<strlen($in); $i+=2) {
 					$ss = substr($in, $i, 2);
-					//$array = unpack("H*data", $ss);
-					//$answer = $array["data"];
-					$bytearray[$index] = hexdec($ss);
+					$byteArray[$index] = hexdec($ss);
 					$index++;
 				}
-                // padding aanvullen tot 16.
-				for ($i=$index; $i<16; $i++) $bytearray[$i] = 0;
 
+				$byteArray = fillPadding($byteArray);
 				$_SESSION['debug'] .= "The input converted to a byte-array with the decimal representation of the ascii-values:";
-				$_SESSION['debug'] .= "\n". implode(",", $bytearray) ."\n";
-				$retv = $bytearray;
+				$_SESSION['debug'] .= "\n". implode(",", $byteArray) ."\n";
+				$retv = $byteArray;
 				$correct = true;
 			}
 		}
@@ -130,9 +132,33 @@ class ioOperations {
 		}
 	}
 
+	/**
+	 * Fills the padding of $byteArray: adds zero's to the byteArray until the length of bytearray modulo 16 equals 0
+	 * @param array $byteArray
+	 * @return array $byteArray
+	 */
+	public function fillPadding($byteArray){
+		$ret = array();
+		$len = count($byteArray);
 
-	public function getState($bytearray)
-	{
+		if($len % 16 == 0){
+			// padding is ok.
+			return $byteArray;
+		}else{
+			$amount = 16 - ($len % 16);
+		}
+		for($i = 0 ; $i < $amount ; $i++){
+			$ret[$i] = 0;
+		}
+		return array_merge($byteArray,$ret);
+	}
+
+	/**
+	 * Converts a bytearray to a single state
+	 * @param $byteArray
+	 * @return array the state
+	 */
+	public function getState($byteArray){
 		// let's convert the input to the state as done with the AES-input,
 		// so first input-byte goes to state[0][0], second input-byte goes to state[1][0], etc
 		$state =  array();
@@ -140,7 +166,7 @@ class ioOperations {
 		for ($i=0; $i<16; $i++)
 		{
 			//for example the input-byte 5 should go to state[1][1], so state[5%4][floor(5/4)]
-			$state[$i%4][floor($i/4)] = $bytearray[$i];
+			$state[$i%4][floor($i/4)] = $byteArray[$i];
 			//$_SESSION['debug'] .= "state[" . $i%4 . "][" . floor($i/4) . "]=" . $bytearray[$i] . "\n";
 		}
 
@@ -153,6 +179,23 @@ class ioOperations {
 			$_SESSION['debug'] .= ")\n";
 		}
 		return $state;
+	}
+
+	/**
+	 * Convert a byteArray to an array of states.
+	 * @param $byteArray
+	 * @return array states
+	 */
+	public function getStates($byteArray){
+		$byteArray = fillPadding($byteArray);
+		$len = count($byteArray);
+		$states = array();
+		$counter = 0;
+		for($i = 0 ; $i < $len ; $i+=16){
+			$states[$counter] = getState(array_slice($byteArray,$i,16));
+			$counter++;
+		}
+		return $states;
 	}
 
 	public function convertStateToByteArray($result)
