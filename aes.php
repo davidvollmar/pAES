@@ -215,21 +215,49 @@ private static $InvS_Box = array(
 			return($result);
       } //end function decrypt
 
-	  public function encrypt_ecb($input, $key)
-	  {
-			
+	   /**
+	    * Encrypten via ECB
+	    *
+	    * todo: testen. Waarschijnlijk gaat er iets mis met (het gebrek aan) padding.
+	    *
+	    * @param $input array De volledige input, dus meerdere blocks
+	    * @param $key array De key om mee te encrypten
+	    * @return array Encrypted data.
+	    */
+	   public function ecb_encrypt($input,$key){
+		   $IO = new ioOperations();
+		   $result = array();
+		   $max = sizeof($input);
+		   for($i = 0  ; $i < $max; $i += 256){
+			   $data = array_slice($input,$i,$i+256);
+			   // van een los bytearray blob naar een state, en dan weer terug naar een bytearray met goede padding.
+			   //$data = $IO->getState($data);
+			   //$data = $IO->convertStateToByteArray($data);
+			   $result = array_merge($result,self::encrypt($data,$key));
+		   }
+		   return $result;
+	   }
 
-		
-	  }
-	  
-	  public function decrypt_ecb($input,$key)
-	  {
-	  
-	  
-	  }
-	  
-	  public function encrypt_CBC_mode($input, $key)
-	  {	  
+	   /**
+	    * Decryptie via ECB
+	    *
+	    * todo: testen. Waarschijnlijk gaat er iets mis met (het gebrek aan) padding.
+	    *
+	    * @param $input array De volledige binaire input
+	    * @param $key array De key om mee te decrypten
+	    * @return array De decrypted waarde
+	    */
+	   public function ecb_decrypt($input,$key){
+		   $result = array();
+		   $max = sizeof($input);
+		   for($i = 0  ; $i < $max; $i += 256){
+			   $data = array_slice($input,$i,$i+256);
+			   $result = array_merge($result,self::decrypt($data,$key));
+		   }
+		   return $result;
+	   }
+
+	   public function encrypt_CBC_mode($input, $key){
 			// CBC Mode encryptie :
 			// $input is in dit geval een 2-dimensionale array van blokken van 128 bits groot (states).			
 			// Maken IV :
@@ -248,8 +276,7 @@ private static $InvS_Box = array(
 			$_SESSION['debug'] .= "Resultaat XOR met IV als bytearray: ".implode(",", $result) ."\n"; 				
 		  				
 			// Stap 2 : Loop starten. Gebruik output van ieder blok om te XORen met volgende blok.
-			for ($p = 1 ; $p < $aantalBlokken;$p++) 
-			{		
+			for ($p = 1 ; $p < $aantalBlokken;$p++){
 				$result = self::encrypt($result,$key);
 				$result = xorState($result, $input[p]);					
 				$endResult[p] = $result;
@@ -257,8 +284,7 @@ private static $InvS_Box = array(
 			return $endResult; // array van encrypted blokken
 	  }
 	  	  
-	  public function decrypt_CBC_mode($input,$key)
-	  {  
+	  public function decrypt_CBC_mode($input,$key){
 			// CBC Mode decryptie :
 			// $input is in dit geval een array van blokken van 128 bits groot (states).
 			$result = array();
@@ -279,8 +305,7 @@ private static $InvS_Box = array(
 			$eersteBlok = $input[$aantalBlokken]; // pak laatste blok uit encrypted array
 			// output eerste stap met decryptie en IV-XOR zit in $result nu
 			// start loop			
-			for($i=1;$i<($aantalBlokken-1);$i++)
-			{					
+			for($i=1;$i<($aantalBlokken-1);$i++){
 				$result = decrypt($input[$i]);
 				$result = xorState($result,$input[($i+1)]);
 				$endResult[$i] = $result;
