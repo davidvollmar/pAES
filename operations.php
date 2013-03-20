@@ -51,7 +51,7 @@
 			<!-- edit peterk -->
 			Select encryptie-mode: 			
 			<select name="encmode">
-			  <option value="Single Block Mode">Single block</option>
+			  <option value="SBM">Single block</option>
 			  <option value="ECB">ECB</option>			  
 			  <option value="CBC">CBC</option>			 
 			  <option value="CFB">CFB</option>			  
