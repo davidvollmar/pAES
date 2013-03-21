@@ -81,11 +81,11 @@ class ioOperations {
 		}
 		else {
 			if ($_POST['format']=='ascii'){
-				if(strlen($in) > 16){
-					$_SESSION['debug'] .= "input to long, maximum length is 16 bytes";
-				}
-				else
-				{
+
+                    //todo slopen
+				//	$_SESSION['debug'] .= "input to long, maximum length is 16 bytes";
+
+
 					//read posted data for state data and for data-format (ascii or hex)
 
 					// convert to a decimal representation of the ascii-values, C for unsigned char
@@ -93,15 +93,13 @@ class ioOperations {
 
 					// make bytearray start at index 0, because result from unpack starts at index 1
 					$byteArray = array_merge($byteArray);
-					if (strlen($in)<16){ //pad with null values
-						for ($i=strlen($in); $i<16; $i++) $byteArray[$i] = 0;
-					}
+					self::fillPadding($byteArray);
 
 					$_SESSION['debug'] .= "The input converted to a byte-array with the decimal representation of the ascii-values:";
 					$_SESSION['debug'] .= "\n". implode(",", $byteArray) ."\n";
 					$retv = $byteArray;
 					$correct = true;
-				}
+
 			}
 			else if ($_POST['format']=='hex'){
 				$byteArray = array();
@@ -200,6 +198,7 @@ class ioOperations {
 
 	public function convertStateToByteArray($result)
 	{
+      //  $output = "";
 		//$output = array(); <- als je die vantevoren de declareerd gaat't allemaal nie goed nie
 		for ($i=0; $i<16; $i++)
 		{
