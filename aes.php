@@ -42,8 +42,8 @@
             $result=$aesops->addRoundKey($state, $w, 0); //add roundkey 0 for this example
             break;
          case "encrypt":				
-				//$result=$aesops->encrypt($state, $key);
-
+				//$result=$aesops->encrypt($state, $key);	
+				
 				switch($encmode)
 				{
 					case("SBM"):							
@@ -67,13 +67,13 @@
 					$result=$aesops->encrypt_CTR($input,$key);
 					break;
 				}
-
+				
 				default:
             $_SESSION['debug'] .= "\n Error, operation not valid";
 			break;
          case "decrypt":       
-				//		$result=$aesops->decrypt($state, $key);
-
+					//	$result=$aesops->decrypt($state, $key);
+						
 				switch($encmode)
 				{
 					case("SBM"):
