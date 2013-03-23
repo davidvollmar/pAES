@@ -19,10 +19,20 @@
    else
    {
       //create AES state (4x4 bytes) of byte array
-      $state = $iop->getState($bytearray);
-      $input = $iop->getStates($byteArray);
+   //   $state = $iop->getState($bytearray);
+      $input = $iop->getStates($bytearray);
 	  
-	  //$_SESSION
+	  $_SESSION['debug'] .= "input heeft ".count($input)." state blokken\n";
+	  $_SESSION['debug'] .= "Longer input converted to array of state blocks: \n";
+	  
+		/*
+	  for ($i=0; $i<16; $i++)
+		{
+			//for example the input-byte 5 should go to state[1][1], so state[5%4][floor(5/4)]
+			$state[$i%4][floor($i/4)] = $byteArray[$i];
+			//$_SESSION['debug'] .= "state[" . $i%4 . "][" . floor($i/4) . "]=" . $bytearray[$i] . "\n";
+		}*/
+	  
 	  
 	  
 	  //put key in 4x4 byte array too
