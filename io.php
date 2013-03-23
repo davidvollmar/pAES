@@ -184,8 +184,8 @@ class ioOperations {
 	 * @param $byteArray
 	 * @return array states
 	 */
-	public function getStates($byteArray){
-		$byteArray = self::fillPadding($byteArray);
+	public function getStates($byteArray){			
+		$byteArray = self::fillPadding($byteArray);		
 		$len = count($byteArray);
 		$states = array();
 		$counter = 0;
