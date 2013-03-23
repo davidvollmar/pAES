@@ -20,7 +20,12 @@
    {
       //create AES state (4x4 bytes) of byte array
       $state = $iop->getState($bytearray);
-      //put key in 4x4 byte array too
+      $input = $iop->getStates($byteArray);
+	  
+	  $_SESSION
+	  
+	  
+	  //put key in 4x4 byte array too
       //$key = $iop->getState($keyarray);
    
       // perform a subBytes operation
@@ -56,20 +61,20 @@
 					break;
 					case "CBC":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
-					$result=$aesops->encrypt_CBC_mode($input,$key);
+					$result=$aesops->cbc_encrypt($input,$key);
 					break;
 					case "CFB":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
-					$result=$aesops->encrypt_CFB($input,$key);
+					$result=$aesops->cfb_encrypt($input,$key);
 					break;
 					case "CTR":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
-					$result=$aesops->encrypt_CTR($input,$key);
+					$result=$aesops->ctr_encrypt($input,$key);
 					break;
 				}
 				
 				default:
-            $_SESSION['debug'] .= "\n Error, operation not valid";
+            $_SESSION['debug'] .= "\n Error, enc operation not valid";
 			break;
          case "decrypt":       
 					//	$result=$aesops->decrypt($state, $key);
@@ -86,19 +91,19 @@
 					break;
 					case "CBC":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
-					$result=$aesops->decrypt_CBC_mode($input,$key);
+					$result=$aesops->cbc_decrypt($input,$key);
 					break;
 					case "CFB":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
-					$result=$aesops->decrypt_CFB($input,$key);
+					$result=$aesops->cfb_decrypt($input,$key);
 					break;
 					case "CTR":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
-					$result=$aesops->decrypt_CTR($input,$key);
+					$result=$aesops->ctr_decrypt($input,$key);
 					break;
 				}
          default:
-            $_SESSION['debug'] .= "\n Error, operation not valid";		
+            $_SESSION['debug'] .= "\n Error, dec operation not valid";		
       }           
 
       // now convert back the final state to output
@@ -318,7 +323,7 @@ private static $InvS_Box = array(
 		   return $result;
 	   }
 	  
-	  public function encrypt_CBC_mode($input, $key)
+	  public function cbc_encrypt($input, $key)
 	  {	  
 			// CBC Mode encryptie :
 			// $input is in dit geval een 2-dimensionale array van blokken van 128 bits groot (states).			
@@ -347,7 +352,7 @@ private static $InvS_Box = array(
 			return $endResult; // array van encrypted blokken
 	  }
 	  	  
-	  public function decrypt_CBC_mode($input,$key)
+	  public function cbc_decrypt($input,$key)
 	  {  
 			// CBC Mode decryptie :
 			// $input is in dit geval een array van blokken van 128 bits groot (states).
@@ -377,7 +382,28 @@ private static $InvS_Box = array(
 			}
 			return $endResult;				
 	  }
-	    
+	  
+		public function cfb_encrypt($input, $key)
+		{
+			$_SESSION['debug'] = " not implemented yet\n"; 
+		}
+
+		public function cfb_decrypt($input,$key)
+		{
+			$_SESSION['debug'] = " not implemented yet\n"; 
+		}
+	  
+	  public function ctr_encrypt($input,$key)
+	  {
+		$_SESSION['debug'] = " not implemented yet\n"; 
+	  }
+	  
+	  public function ctr_decrypt($input,$key)
+	  {
+		$_SESSION['debug'] = " not implemented yet\n"; 
+	  }
+	  
+	  
 	  public function subBytes($state)
       {
          for ($row=0; $row<4; $row++){ // for all 16 bytes in the (4x4-byte) State

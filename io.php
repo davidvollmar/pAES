@@ -114,7 +114,7 @@ class ioOperations {
 					$index++;
 				}
 
-				$byteArray = fillPadding($byteArray);
+				$byteArray = self::fillPadding($byteArray);
 				$_SESSION['debug'] .= "The input converted to a byte-array with the decimal representation of the ascii-values:";
 				$_SESSION['debug'] .= "\n". implode(",", $byteArray) ."\n";
 				$retv = $byteArray;
