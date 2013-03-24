@@ -399,7 +399,7 @@ private static $InvS_Box = array(
 			// Decryptie eerste blok uit encryptie methode :
 			// Onthoud dit blok want het moet gexorred worden met de output van de volgende encryptie stap
 			$aantalBlokken = count($input);
-			$eersteBlokDecr = self::decrypt($input[0]);
+			$eersteBlokDecr = self::decrypt($input[0],$key);
 			// XOR met IV na decryptie eerste blok (laatste blok van encryptie)
 			$result = self::xorState($eersteBlokDecr,$IV);	
 			//$endResult[$aantalBlokken] = $result;
@@ -413,10 +413,6 @@ private static $InvS_Box = array(
 			// start loop			
 			for($i=1;$i<($aantalBlokken-1);$i++)
 			{					
-<<<<<<< HEAD
-=======
-
->>>>>>> d97d4d68f45c576e3784a12e9394312462e11bba
 				$result = self::decrypt($input[$i],$key);
 				$result = self::xorState($result,$input[($i+1)]);
 				$endResult[$i] = $result;
