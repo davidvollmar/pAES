@@ -19,12 +19,11 @@
    else
    {
       //create AES state (4x4 bytes) of byte array
-   //   $state = $iop->getState($bytearray);
+      $state = $iop->getState($bytearray);
       $input = $iop->getStates($bytearray);
 	  
-	  $_SESSION['debug'] .= "input heeft ".count($input)." state blokken\n";
-	  $_SESSION['debug'] .= "Longer input converted to array of state blocks: \n";
-	  
+	  $_SESSION['debug'] .= "input heeft ".count($input)." state blokken\n";  
+	  $_SESSION['debug'] .= "inhoud bytearray: ".implode(",",$bytearray)."\n";
 		/*
 	  for ($i=0; $i<16; $i++)
 		{
@@ -41,6 +40,7 @@
       // perform a subBytes operation
       $aesops = new Aes();
       $result = array();
+	  //$IV = $aesops->makeIV(); // misschien toch maar niet hier
       $_SESSION['debug'] .= "\nThe ". $operation . " operation:\n";
       switch ($operation){
          case "subBytes":
@@ -303,12 +303,14 @@ private static $InvS_Box = array(
 		   $IO = new ioOperations();
 		   $result = array();
 		   $max = sizeof($input);
+		   $_SESSION['debug'] .= "ECB: Size of input =".$max."\n";
 		   for($i = 0  ; $i < $max; $i += 256){
 			   $data = array_slice($input,$i,$i+256);
 			   // van een los bytearray blob naar een state, en dan weer terug naar een bytearray met goede padding.
 			   //$data = $IO->getState($data);
 			   //$data = $IO->convertStateToByteArray($data);
 			   $result = array_merge($result,self::encrypt($data,$key));
+			   $_SESSION['debug'] .= "Eindresultaat ecb_encrypt na iedere ronde :\n".implode(",",$result)."\n";
 		   }
 		   return $result;
 	   }
@@ -350,13 +352,15 @@ private static $InvS_Box = array(
 			// Stap 1 : Eerste blok klare tekst XORen met de IV.				
 			$eersteBlok = $input[0]; // Haal eerste state blok uit de array van blokken					
 			$result = self::xorState($eersteBlok,$IV);			
-			$_SESSION['debug'] .= "Resultaat XOR met IV als bytearray: ".implode(",", $result) ."\n"; 				
-		  				
+			$_SESSION['debug'] .= "Resultaat XOR met IV als bytearray: ".$result."\n"; 				
+			
+		  	
+			
 			// Stap 2 : Loop starten. Gebruik output van ieder blok om te XORen met volgende blok.
 			for ($p = 1 ; $p < $aantalBlokken;$p++) 
 			{		
 				$result = self::encrypt($result,$key);
-				$result = xorState($result, $input[p]);					
+				$result = self::xorState($result, $input[p]);					
 				$endResult[p] = $result;
 			}				
 			return $endResult; // array van encrypted blokken
@@ -394,23 +398,128 @@ private static $InvS_Box = array(
 	  }
 	  
 		public function cfb_encrypt($input, $key)
-		{
-			$_SESSION['debug'] = " not implemented yet\n"; 
+		{			
+			// CFB Mode encryptie :
+			// $input is een array van state blokken.			
+			// Maken IV :
+			$IV = self::makeIV();
+			
+			// Hoeveel blokken moeten we encrypten ?
+			$aantalBlokken = 0;
+			$aantalBlokken = count($input); // $input is een array van state blokken		
+			$_SESSION['debug'] .= "Aantal blokken input: ".$aantalBlokken."\n";
+			$endResult = array();
+			$result=array();
+			$eersteBlok = array();
+			// Encryptie :			
+			// Stap 1: De IV moet vercijferd worden met de key :
+			$result = self::encrypt($IV,$key);
+			// Stap 2 : De output van de IV-vercijfering moet geXORed worden met Blok 1 Klare tekst
+			$eersteBlok = $input[0]; // Haal eerste state blok uit de array van blokken	
+			$result = self::xorState($result,$eersteBlok);
+			$_SESSION['debug'] .= "Resultaat XOR van IV met M1: ".$result."\n"; 						  				
+			// Stap 3 : Loop starten. Gebruik output van ieder blok om te XORen met volgende blok.
+			for ($p = 1 ; $p < $aantalBlokken;$p++) 
+			{		
+				$result = self::encrypt($result,$key);
+				$result = self::xorState($result, $input[p]);					
+				$endResult[p] = $result;
+			}				
+			return $endResult; // array van CFB encrypted blokken		
 		}
 
 		public function cfb_decrypt($input,$key)
-		{
-			$_SESSION['debug'] = " not implemented yet\n"; 
+		{			
+			// CFB Mode decryptie :
+			// $input is in dit geval een array van blokken van 128 bits groot (states).
+			$result = array();
+			$endResult = array();
+			$blokStore = array();
+			$aantalBlokken = count($input); 
+			// Stap 1 CFB decryptie :
+			// ENCRYPTIE(!) van de IV :
+			$result = self::encrypt($IV);
+			// Voer XOR uit met C1 en de encrypted IV :
+			$result = xorState($result,$input[0]);
+			// $result bevat nu het eerste blok klare tekst M1.
+			// aan array toevoegen van eindresultaat :
+			$endResult[0] = $result;			
+			// loop waarin C2 wordt encrypted en daarna geXORed met C3 :	
+			for($i=1;$i<($aantalBlokken-1);$i++)
+			{					
+				$result = encrypt($input[$i]);
+				$result = xorState($result,$input[($i+1)]);
+				$endResult[$i] = $result;
+			}
+			return $endResult;			
+			
 		}
 	  
 	  public function ctr_encrypt($input,$key)
 	  {
-		$_SESSION['debug'] = " not implemented yet\n"; 
+		// Counter mode :
+		// Met iedere IV een int meegeven.
+		// XORen met de IV array lijkt een goed idee op het moment.
+			$endResult = array(); // Hier komt eindresultaat in van encrypted state blokken
+			$result=array();
+		// CTR Mode encryptie :
+			// $input is een array van state blokken.			
+			// Maken IV :
+			$IV = self::makeIV();
+			$IVX = array();
+			// maken teller :		
+			// Hoeveel blokken moeten we encrypten ?
+			$aantalBlokken = 0; // init.
+			$aantalBlokken = count($input); // $input is een array van state blokken
+			$counterMax = $aantalBlokken;
+			// start loop:
+			for($i=0;$i<=$counterMax;$i++)
+			{			
+				// XOR IV met $counter :
+					$byteArrayFromCounter = self::getState(dechex($i));
+					$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
+					$IVX = xorState($IV,$byteArrayFromCounter);
+					$_SESSION['debug'] .= "Resultaat XOR ByteArray met counter: ".implode(",",$IVX)."\n";
+				// encrypt de geXORde counter met IV met de key:
+					$result = self::encrypt($IVX,$key);
+				// XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
+					$result = xorState($result,$input[$i]);
+					$endResult[$i] = $result;
+			}					
+			return $endResult; // array van CFB encrypted blokken	
+		
+		
 	  }
 	  
 	  public function ctr_decrypt($input,$key)
-	  {
-		$_SESSION['debug'] = " not implemented yet\n"; 
+	  {		
+			// CTR Mode decryptie : (is gelijk aan encryptie eigenlijk)
+			// XORen met de IV array lijkt een goed idee op het moment.
+			$endResult = array(); // Hier komt eindresultaat in van encrypted state blokken
+			$result=array();
+		// CTR Mode encryptie :
+			// $input is een array van state blokken.						
+			$IVX = array();
+			// maken teller :		
+			// Hoeveel blokken moeten we encrypten ?
+			$aantalBlokken = 0; // init.
+			$aantalBlokken = count($input); // $input is een array van state blokken
+			$counterMax = $aantalBlokken;
+			// start loop:
+			for($i=0;$i<=$counterMax;$i++)
+			{			
+				// XOR IV met $counter :
+					$byteArrayFromCounter = self::getState(dechex($i));
+					$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
+					$IVX = xorState($IV,$byteArrayFromCounter);
+					$_SESSION['debug'] .= "Resultaat XOR ByteArray met counter: ".implode(",",$IVX)."\n";
+				// encrypt de geXORde counter met IV met de key:
+					$result = self::encrypt($IVX,$key);
+				// XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
+					$result = xorState($result,$input[$i]);
+					$endResult[$i] = $result;
+			}					
+			return $endResult; // array van CFB encrypted blokken	
 	  }
 	  
 	  
