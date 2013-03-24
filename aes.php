@@ -478,12 +478,12 @@ private static $InvS_Box = array(
 				// XOR IV met $counter :
 					$byteArrayFromCounter = self::getState(dechex($i));
 					$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
-					$IVX = xorState($IV,$byteArrayFromCounter);
+					$IVX = self::xorState($IV,$byteArrayFromCounter);
 					$_SESSION['debug'] .= "Resultaat XOR ByteArray met counter: ".implode(",",$IVX)."\n";
 				// encrypt de geXORde counter met IV met de key:
 					$result = self::encrypt($IVX,$key);
 				// XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
-					$result = xorState($result,$input[$i]);
+					$result = self::xorState($result,$input[$i]);
 					$endResult[$i] = $result;
 			}					
 			return $endResult; // array van CFB encrypted blokken	
