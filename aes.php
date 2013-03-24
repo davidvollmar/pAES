@@ -373,7 +373,9 @@ private static $InvS_Box = array(
 			// Stap 1 : Eerste blok klare tekst XORen met de IV.				
 			$eersteBlok = $input[0]; // Haal eerste state blok uit de array van blokken					
 			$result = self::xorState($eersteBlok,$IV);			
-			$_SESSION['debug'] .= "Resultaat XOR met IV als bytearray: ".implode(",",$result)."\n";$endResult[0]=$result; 	  	
+			$_SESSION['debug'] .= "Resultaat XOR met IV als bytearray: ".implode(",",$result)."\n";
+			$result = self::encrypt($result,$key);
+			$endResult[0]=$result; 	  	
 			
 			// Stap 2 : Loop starten. Gebruik output van ieder blok om te XORen met volgende blok.
 			for ($p = 1 ; $p < $aantalBlokken;$p++) 
@@ -399,7 +401,7 @@ private static $InvS_Box = array(
 			// Decryptie eerste blok uit encryptie methode :
 			// Onthoud dit blok want het moet gexorred worden met de output van de volgende encryptie stap
 			$aantalBlokken = count($input);
-			$eersteBlokDecr = self::decrypt($input[0]);
+			$eersteBlokDecr = self::decrypt($input[0],$key);
 			// XOR met IV na decryptie eerste blok (laatste blok van encryptie)
 			$result = self::xorState($eersteBlokDecr,$IV);	
 			//$endResult[$aantalBlokken] = $result;
@@ -408,17 +410,13 @@ private static $InvS_Box = array(
 			// Stap 2
 			// Loop waarin de encrypted blokken geXORred worden met de klare tekst na de volgende decrypt operatie
 			// onthoud blok in $eersteBlok
-			$eersteBlok = $input[$aantalBlokken]; // pak laatste blok uit encrypted array
+			$eersteBlok = $input[0]; // pak eerste blok uit encrypted array
 			// output eerste stap met decryptie en IV-XOR zit in $result nu
 			// start loop			
-			for($i=1;$i<($aantalBlokken-1);$i++)
+			for($i=1;$i<($aantalBlokken);$i++)
 			{					
-<<<<<<< HEAD
-=======
-
->>>>>>> d97d4d68f45c576e3784a12e9394312462e11bba
 				$result = self::decrypt($input[$i],$key);
-				$result = self::xorState($result,$input[($i+1)]);
+				$result = self::xorState($result,$input[($i-1)]);
 				$endResult[$i] = $result;
 			}
 			return $endResult;				
@@ -500,9 +498,9 @@ private static $InvS_Box = array(
 			{			
 				// XOR IV met $counter :
 					$byteArrayFromCounter = $IO->getState(dechex($i));
-					$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
+				//	$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
 					$IVX = self::xorState($IV,$byteArrayFromCounter);
-					$_SESSION['debug'] .= "Resultaat XOR ByteArray met counter: ".implode(",",$IVX)."\n";
+				//	$_SESSION['debug'] .= "Resultaat XOR ByteArray met counter: ".implode(",",$IVX)."\n";
 				// encrypt de geXORde counter met IV met de key:
 					$result = self::encrypt($IVX,$key);
 				// XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
@@ -532,9 +530,9 @@ private static $InvS_Box = array(
 			{			
 				// XOR IV met $counter :
 					$byteArrayFromCounter = $IO->getState(dechex($i));
-					$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
+			//		$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
 					$IVX = self::xorState($IV,$byteArrayFromCounter);
-					$_SESSION['debug'] .= "Resultaat XOR IV met counter: ".implode(",",$IVX)."\n";
+			//		$_SESSION['debug'] .= "Resultaat XOR IV met counter: ".implode(",",$IVX)."\n";
 				// encrypt de geXORde counter met IV met de key:
 					$result = self::encrypt($IVX,$key);
 				// XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
@@ -548,8 +546,8 @@ private static $InvS_Box = array(
       {
          for ($row=0; $row<4; $row++){ // for all 16 bytes in the (4x4-byte) State
             for ($column=0; $column<4; $column++){ // for all 16 bytes in the (4x4-byte) State
-               $_SESSION['debug'] .= "subBytes : state[$row][$column]=" . $state[$row][$column] .
-                  "-->" . self::$sBox[$state[$row][$column]]."\n";
+        //       $_SESSION['debug'] .= "subBytes : state[$row][$column]=" . $state[$row][$column] .
+         //         "-->" . self::$sBox[$state[$row][$column]]."\n";
                $state[$row][$column] = self::$sBox[$state[$row][$column]];
             }
          }
@@ -560,8 +558,8 @@ public function invSubBytes($state)
 {
          for ($row=0; $row<4; $row++){ // for all 16 bytes in the (4x4-byte) State
             for ($column=0; $column<4; $column++){ // for all 16 bytes in the (4x4-byte) State
-               $_SESSION['debug'] .= "state na invSubBytes : state[$row][$column]=" . $state[$row][$column] .
-                  "-->" . self::$InvS_Box[$state[$row][$column]]."\n";
+          //     $_SESSION['debug'] .= "state na invSubBytes : state[$row][$column]=" . $state[$row][$column] .
+          //        "-->" . self::$InvS_Box[$state[$row][$column]]."\n";
 // here we actually do stuff:
                $state[$row][$column] = self::$InvS_Box[$state[$row][$column]];
             }
@@ -582,7 +580,7 @@ public function invSubBytes($state)
          for ($row=0; $row<4; $row++){
             for ($column=0; $column<4; $column++){
                $state[$row][$column] = $temp[$row][$column];
-               $_SESSION['debug'] .= "ShiftRows : state[$row][$column]=".$state[$row][$column]."\n";
+         //      $_SESSION['debug'] .= "ShiftRows : state[$row][$column]=".$state[$row][$column]."\n";
             }
          }
          return $state;
@@ -602,7 +600,7 @@ public function invShiftRows($state)
          for ($row=0; $row<4; $row++){
             for ($column=0; $column<4; $column++){
                $state[$row][$column] = $temp[$row][$column];
-               $_SESSION['debug'] .= "state after invShiftRows[$row][$column]=".$state[$row][$column]." in HEX :".dechex($state[$row][$column])."\n";
+         //      $_SESSION['debug'] .= "state after invShiftRows[$row][$column]=".$state[$row][$column]." in HEX :".dechex($state[$row][$column])."\n";
             }
          }
          return $state;
@@ -652,13 +650,13 @@ public function invShiftRows($state)
             $a = array(4); // 'a' is a copy of the current column from 's'
             for ($i=0; $i<4; $i++) $a[$i] = $state[$i][$c];
             
-            $_SESSION['debug'] .= "\nMixColumns : a is copy column from state: " . implode(",", $a);
+        //    $_SESSION['debug'] .= "\nMixColumns : a is copy column from state: " . implode(",", $a);
             $state[0][$c] = $mul2[$a[0]] ^ $mul3[$a[1]] ^ $a[2] ^ $a[3]; // 2*a0 + 3*a1 + a2 + a3
             $state[1][$c] = $a[0] ^ $mul2[$a[1]] ^ $mul3[$a[2]] ^ $a[3]; // a0 * 2*a1 + 3*a2 + a3
             $state[2][$c] = $a[0] ^ $a[1] ^ $mul2[$a[2]] ^ $mul3[$a[3]]; // a0 + a1 + 2*a2 + 3*a3
             $state[3][$c] = $mul3[$a[0]] ^ $a[1] ^ $a[2] ^ $mul2[$a[3]]; // 3*a0 + a1 + a2 + 2*a3
 
-            $_SESSION['debug'] .= "\nresulting column: ".$state[0][$c].",".$state[1][$c].",".$state[2][$c].",".$state[3][$c];
+         //   $_SESSION['debug'] .= "\nresulting column: ".$state[0][$c].",".$state[1][$c].",".$state[2][$c].",".$state[3][$c];
          }
          return $state;
       } // end function mixColumns
@@ -752,8 +750,8 @@ static $mul14 = array(
             $state[2][$c] = $mul13[$a[0]] ^ $mul9[$a[1]] ^ $mul14[$a[2]] ^ $mul11[$a[3]]; // 13*a0 + 9*a1 + 14*a2 + 11*a3
             $state[3][$c] = $mul11[$a[0]] ^ $mul13[$a[1]] ^ $mul9[$a[2]] ^ $mul14[$a[3]]; // 11*a0 + 13*a1 + 9*a2 + 14*a3
 
-            $_SESSION['debug'] .= "\nresulting column: ".$state[0][$c].",".$state[1][$c].",".$state[2][$c].",".$state[3][$c];
-			$_SESSION['debug'] .= "\ncolumn in Hexade: ".dechex($state[0][$c]).",".dechex($state[1][$c]).",".dechex($state[2][$c]).",".dechex($state[3][$c]."\n");
+       //     $_SESSION['debug'] .= "\nresulting column: ".$state[0][$c].",".$state[1][$c].",".$state[2][$c].",".$state[3][$c];
+		//	$_SESSION['debug'] .= "\ncolumn in Hexade: ".dechex($state[0][$c]).",".dechex($state[1][$c]).",".dechex($state[2][$c]).",".dechex($state[3][$c]."\n");
          }
          return $state;
       } // end function mixColumns
@@ -763,9 +761,9 @@ static $mul14 = array(
          $_SESSION['debug'] .= "\naddRoundKey:\n";
          for ($r=0; $r<4; $r++) {
             for ($c=0; $c<4; $c++){
-               $_SESSION['debug'] .= "state[".$r."][".$c."]=".$state[$r][$c]." XOR ".$w[$rnd*4+$c][$r]."=";
+           //    $_SESSION['debug'] .= "state[".$r."][".$c."]=".$state[$r][$c]." XOR ".$w[$rnd*4+$c][$r]."=";
                $state[$r][$c] ^= $w[$rnd*4+$c][$r];
-               $_SESSION['debug'] .= $state[$r][$c]."  In HEX: ".dechex($state[$r][$c])."\n";
+           //    $_SESSION['debug'] .= $state[$r][$c]."  In HEX: ".dechex($state[$r][$c])."\n";
             }
          }
          return $state;
@@ -773,20 +771,20 @@ static $mul14 = array(
 
       public static function keyExpansion($key) // generate Key Schedule from Key
       {
-         $_SESSION['debug'] .= "keyExpansion:\n";
+      //   $_SESSION['debug'] .= "keyExpansion:\n";
          $Nk = count($key)/4; // key length (in words): 4/6/8 for 128/192/256-bit keys
          $Nr = $Nk + 6; // no of rounds: 10/12/14 for 128/192/256-bit keys
   
          $w = array();
          $temp = array();
-         $_SESSION['debug'] .= "key[0]=";
+       //  $_SESSION['debug'] .= "key[0]=";
          for ($i=0; $i<$Nk; $i++) {
             $r = array($key[4*$i], $key[4*$i+1], $key[4*$i+2], $key[4*$i+3]);
             $w[$i] = $r;
             //$_SESSION['debug'] .= "w[".$i."]=";
             for ($n=0; $n<4; $n++) $_SESSION['debug'] .= dechex($w[$i][$n])." ";
          }
-         $_SESSION['debug'] .= "\nkey[1]=";
+       //  $_SESSION['debug'] .= "\nkey[1]=";
          for ($i=$Nk; $i<(4*($Nr+1)); $i++) {
             $w[$i] = array();
             for ($t=0; $t<4; $t++) $temp[$t] = $w[$i-1][$t];
@@ -799,7 +797,7 @@ static $mul14 = array(
             //$_SESSION['debug'] .= "w[".$i."]=";
             for ($t=0; $t<4; $t++) {
                $w[$i][$t] = $w[$i-$Nk][$t] ^ $temp[$t];
-               $_SESSION['debug'] .= dechex($w[$i][$t])." ";
+          //     $_SESSION['debug'] .= dechex($w[$i][$t])." ";
             }
             if (((($i+1)%4)==0)&&($i<4*$Nr)) $_SESSION['debug'] .= "\nkey[".(($i+1)/4)."]=";
          }
