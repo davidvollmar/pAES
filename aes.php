@@ -413,10 +413,6 @@ private static $InvS_Box = array(
 			// start loop			
 			for($i=1;$i<($aantalBlokken-1);$i++)
 			{					
-<<<<<<< HEAD
-=======
-
->>>>>>> d97d4d68f45c576e3784a12e9394312462e11bba
 				$result = self::decrypt($input[$i],$key);
 				$result = self::xorState($result,$input[($i+1)]);
 				$endResult[$i] = $result;
