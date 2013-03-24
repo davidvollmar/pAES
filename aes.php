@@ -52,7 +52,7 @@
 			switch($encmode){
 				case "SBM":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
-					$result=$aesops->encrypt($input, $key);
+					$result=$aesops->sbm_encrypt($input,$key);
 					break;
 				case "ECB":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
@@ -79,7 +79,7 @@
 			switch($encmode){
 				case "SBM":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
-					$result=$aesops->decrypt($input, $key);
+					$result=$aesops->sbm_decrypt($input, $key);
 					break;
 				case "ECB":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
@@ -109,6 +109,7 @@
       }           
 
       // now convert back the final state to output
+      $_SESSION['debug'] .= "\nThis should only apear once.\n";
       $output = $iop->convertStatesToByteString($result);
       $_SESSION['debug'] .= "\n\nThe hexadecimal result of the ". $operation ." operation:\n$output\n";
       $_SESSION['output'] = $output;
@@ -180,10 +181,19 @@ private static $InvS_Box = array(
       array(0x80, 0x00, 0x00, 0x00),
       array(0x1b, 0x00, 0x00, 0x00),
       array(0x36, 0x00, 0x00, 0x00) );
+<<<<<<< Updated upstream
 		
 				
 		public function makeIV()
 		{		
+=======
+
+		private static $IV = array();
+		private function makeIV(){
+
+			$IO = new ioOperations();
+
+>>>>>>> Stashed changes
 		// Maken IV :
 			// Voor CBC mode moet er een Initialisatie Vector gemaakt worden. Een (bijna-) random block van 128 bits :
 			// De IV bloklengte moet gelijk zijn aan de blokgrootte van de boodschap. (en die is bij ons altijd 128 bit.)
@@ -194,7 +204,7 @@ private static $InvS_Box = array(
 				$IV[$i] = $random;
 			}
 			$_SESSION['debug'] .= "De IV als bytearray : ". implode(",", $IV) ."\n"; 
-			$IV = self::getState($IV); // maak een State blok van de IV
+			$IV = $IO->getState($IV); // maak een State blok van de IV
 			return $IV;
 		}
 		
@@ -281,6 +291,38 @@ private static $InvS_Box = array(
 			return($result);
       } //end function decrypt
 
+
+	/**
+	 * Encrypts an array of states with Sbm
+	 * @param $input an array of states (only the first state will be processed)
+	 * @return array the encrypt state in an array of states
+	 */
+	public function sbm_encrypt($input,$key){
+		if(!$input || !is_array($input)){
+			die("Invalid input at smb_encrypt");
+		}else
+			$return = array();
+			$return[0] = self::encrypt($input[0],$key);
+			return $return;
+	}
+
+
+
+	/**
+	 * decrypts an array of states with Sbm
+	 * @param $input an array of states (only the first state will be processed)
+	 * @return array the decrypt state in an array of states
+	 */
+	public function sbm_decrypt($input,$key){
+		if(!$input || !is_array($input)){
+			die("Invalid input at smb_decrypt");
+		}else
+			$return = array();
+			$return[0] = self::decrypt($input[0],$key);
+			return $return;
+	}
+
+
 	   /**
 	    * Encrypten via ECB
 	    *
@@ -292,15 +334,12 @@ private static $InvS_Box = array(
 	    */
 	   public function ecb_encrypt($input,$key)
 	   {
-		   $IO = new ioOperations();
 		   $result = array();
-		   $max = sizeof($input);
-
+		   $max = count($input);
 		   $_SESSION['debug'] .= "ECB: Size of input =".$max."\n";
-		   for($i = 0  ; $i < $max; $i += 256){
-			   $data = array_slice($input,$i,$i+256);
-			   $result = array_merge($result,self::encrypt($data,$key));
-			   $_SESSION['debug'] .= "Eindresultaat ecb_encrypt na iedere ronde :\n".implode(",",$result)."\n";
+		   for($i = 0  ; $i < $max; $i++){
+			   $result[$i] = self::encrypt($input[$i],$key);
+
 		   }
 		   return $result;
 	   }
@@ -344,10 +383,16 @@ private static $InvS_Box = array(
 			for ($p = 1 ; $p < $aantalBlokken;$p++) 
 			{		
 				$result = self::encrypt($result,$key);
+<<<<<<< Updated upstream
 				$result = self::xorState($result, $input[$p]);					
 				$endResult[$p] = $result;
 			}	
 			$_SESSION['debug'] .= "cbc encryptie eindresultaat:".implode(",",$endResult)."\n";			
+=======
+				$result = self::xorState($result, $input[$p]);
+				$endResult[$p] = $result;
+			}				
+>>>>>>> Stashed changes
 			return $endResult; // array van encrypted blokken
 			
 	  }
@@ -364,11 +409,18 @@ private static $InvS_Box = array(
 			// Decryptie eerste blok uit encryptie methode :
 			// Onthoud dit blok want het moet gexorred worden met de output van de volgende encryptie stap
 			$aantalBlokken = count($input);
+<<<<<<< Updated upstream
 			$eersteBlokDecr = self::decrypt($input[0]);
 			// XOR met IV na decryptie eerste blok (laatste blok van encryptie)
 			$result = self::xorState($eersteBlokDecr,$IV);	
 			//$endResult[$aantalBlokken] = $result;
 			$endResult[0] = $result;
+=======
+			$eersteBlokDecr = self::decrypt($input[$aantalBlokken],$key);
+			// XOR met IV na decryptie eerste blok (laatste blok van encryptie)
+			$result = self::xorState($eersteBlokDecr,$IV);
+			$endResult[$aantalBlokken] = $result;
+>>>>>>> Stashed changes
 			// Stap 2
 			// Loop waarin de encrypted blokken geXORred worden met de klare tekst na de volgende decrypt operatie
 			// onthoud blok in $eersteBlok
@@ -377,7 +429,11 @@ private static $InvS_Box = array(
 			// start loop			
 			for($i=1;$i<($aantalBlokken-1);$i++)
 			{					
+<<<<<<< Updated upstream
 				$result = self::decrypt($input[$i]);
+=======
+				$result = self::decrypt($input[$i],$key);
+>>>>>>> Stashed changes
 				$result = self::xorState($result,$input[($i+1)]);
 				$endResult[$i] = $result;
 			}
@@ -441,7 +497,8 @@ private static $InvS_Box = array(
 	  
 	  public function ctr_encrypt($input,$key,$IV)
 	  {
-		// Counter mode :
+			$IO = new ioOperations();
+	  // Counter mode :
 		// Met iedere IV een int meegeven.
 		// XORen met de IV array lijkt een goed idee op het moment.
 			$endResult = array(); // Hier komt eindresultaat in van encrypted state blokken
@@ -458,7 +515,7 @@ private static $InvS_Box = array(
 			for($i=0;$i<=$counterMax;$i++)
 			{			
 				// XOR IV met $counter :
-					$byteArrayFromCounter = self::getState(dechex($i));
+					$byteArrayFromCounter = $IO->getState(dechex($i));
 					$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
 					$IVX = self::xorState($IV,$byteArrayFromCounter);
 					$_SESSION['debug'] .= "Resultaat XOR ByteArray met counter: ".implode(",",$IVX)."\n";
@@ -485,14 +542,19 @@ private static $InvS_Box = array(
 			$aantalBlokken = 0; // init.
 			$aantalBlokken = count($input); // $input is een array van state blokken
 			$counterMax = $aantalBlokken;
+			$IO = new ioOperations();
 			// start loop:
 			for($i=0;$i<=$counterMax;$i++)
 			{			
 				// XOR IV met $counter :
-					$byteArrayFromCounter = self::getState(dechex($i));
+					$byteArrayFromCounter = $IO->getState(dechex($i));
 					$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
 					$IVX = self::xorState($IV,$byteArrayFromCounter);
+<<<<<<< Updated upstream
 					$_SESSION['debug'] .= "Resultaat XOR IV met counter: ".implode(",",$IVX)."\n";
+=======
+					$_SESSION['debug'] .= "Resultaat XOR ByteArray met counter: ".implode(",",$IVX)."\n";
+>>>>>>> Stashed changes
 				// encrypt de geXORde counter met IV met de key:
 					$result = self::encrypt($IVX,$key);
 				// XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
@@ -777,6 +839,7 @@ static $mul14 = array(
          $w[3] = $tmp;
          return $w;
       }
+<<<<<<< Updated upstream
       
 	 public function getState($byteArray){
 		// let's convert the input to the state as done with the AES-input,
@@ -802,6 +865,10 @@ static $mul14 = array(
 		}
 		return $state;
 	}
+=======
+
+
+>>>>>>> Stashed changes
 	  
 	  public function xorState($state1, $state2)
 	  {
