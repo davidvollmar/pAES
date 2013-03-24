@@ -31,8 +31,8 @@
       // perform a subBytes operation
       $aesops = new Aes();
       $result = array();
-	  $IV = $aesops->makeIV(); // we gebruiken zelfde IV voor alle encrypties
-	  
+	 // $IV = $aesops->makeIV(); // we gebruiken zelfde IV voor alle encrypties
+	  $IV=explode(",","a0,d4,90,97,e4,eb,ba,1,c9,c7,20,9c,e8,1d,1c,de");
       $_SESSION['debug'] .= "\nThe ". $operation . " operation:\n";
       switch ($operation){
          case "subBytes":
