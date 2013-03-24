@@ -60,7 +60,7 @@
 			switch($encmode){
 				case "SBM":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
-					$result=$aesops->encrypt($state, $key);					
+					$result=$aesops->encrypt($input, $key);
 					break;
 				case "ECB":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
@@ -87,7 +87,7 @@
 			switch($encmode){
 				case "SBM":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
-					$result=$aesops->decrypt($state, $key);					
+					$result=$aesops->decrypt($input, $key);
 					break;
 				case "ECB":
 					$_SESSION['debug'] .= "Mode = ".$encmode."\n";
@@ -117,7 +117,7 @@
       }           
 
       // now convert back the final state to output
-      $output = $iop->convertStateToByteArray($result);
+      $output = $iop->convertStatesToByteString($result);
       $_SESSION['debug'] .= "\n\nThe hexadecimal result of the ". $operation ." operation:\n$output\n";
       $_SESSION['output'] = $output;
    }
@@ -303,12 +303,8 @@ private static $InvS_Box = array(
 		   $IO = new ioOperations();
 		   $result = array();
 		   $max = sizeof($input);
-		   for($i = 0  ; $i < $max; $i += 256){
-			   $data = array_slice($input,$i,$i+256);
-			   // van een los bytearray blob naar een state, en dan weer terug naar een bytearray met goede padding.
-			   //$data = $IO->getState($data);
-			   //$data = $IO->convertStateToByteArray($data);
-			   $result = array_merge($result,self::encrypt($data,$key));
+		   for($i = 0  ; $i < $max; $i ++){
+			   $result[$i] = self::encrypt($input[$i],$key);
 		   }
 		   return $result;
 	   }
@@ -326,9 +322,8 @@ private static $InvS_Box = array(
 	   {
 		   $result = array();
 		   $max = sizeof($input);
-		   for($i = 0  ; $i < $max; $i += 256){
-			   $data = array_slice($input,$i,$i+256);
-			   $result = array_merge($result,self::decrypt($data,$key));
+		   for($i = 0  ; $i < $max; $i++){
+			   $result[$i] = self::decrypt($input[$i],$key);
 		   }
 		   return $result;
 	   }
@@ -339,7 +334,7 @@ private static $InvS_Box = array(
 			// $input is in dit geval een 2-dimensionale array van blokken van 128 bits groot (states).			
 			// Maken IV :
 			$IV = self::makeIV();
-			
+
 			// Hoeveel blokken moeten we encrypten ?
 			$aantalBlokken = 0;
 			$aantalBlokken = count($input); // $input is een array van state blokken		
@@ -697,9 +692,7 @@ static $mul14 = array(
          return $w;
       }
       
-	  // getState staat er nu dubbel in maar heb hem hier nodig door poor design.
-	  // En om van de initialisatie vector een state te maken :
-	  
+
 	   public function getState($bytearray)
       {
          // let's convert the input to the state as done with the AES-input, 

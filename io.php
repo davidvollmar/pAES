@@ -148,6 +148,12 @@ class ioOperations {
 		for($i = 0 ; $i < $amount ; $i++){
 			$ret[$i] = 0;
 		}
+		echo("padding_byteArray: ");
+		var_dump($byteArray);
+		echo("<br />");
+		echo("padding_ret");
+		var_dump($ret);
+		echo("<br />");
 		return array_merge($byteArray,$ret);
 	}
 
@@ -160,6 +166,7 @@ class ioOperations {
 		// let's convert the input to the state as done with the AES-input,
 		// so first input-byte goes to state[0][0], second input-byte goes to state[1][0], etc
 		$state =  array();
+		$byteArray = self::fillPadding($byteArray);
 		$_SESSION['debug'] .= "\nThe input converted to a 4x4 state-array\n";
 		for ($i=0; $i<16; $i++)
 		{
@@ -198,12 +205,34 @@ class ioOperations {
 
 	public function convertStateToByteArray($result)
 	{
-      //  $output = "";
-		//$output = array(); <- als je die vantevoren de declareerd gaat't allemaal nie goed nie
+        $outputarr = array();
+
 		for ($i=0; $i<16; $i++)
 		{
 			//for example state[2][1] should go to output-byte 6, so out[6]=state[6%4][floor(6/4)]
 			$outputarr[$i] = $result[$i%4][floor($i/4)];
+		}
+		$_SESSION['debug'] .= "\nThe result converted back to a linear decimal representation:\n";
+		$_SESSION['debug'] .= implode(",", $outputarr);
+
+		/*
+		for ($i=0; $i<16; $i++)
+		{
+			$output.= dechex($outputarr[$i])." ";
+		}
+		return $output;
+		*/
+		return $outputarr;
+	}
+
+	public function convertStateToByteString($rage)
+	{
+        $output = "";
+
+		for ($i=0; $i<16; $i++)
+		{
+			//for example state[2][1] should go to output-byte 6, so out[6]=state[6%4][floor(6/4)]
+			$outputarr[$i] = $rage[$i%4][floor($i/4)];
 		}
 		$_SESSION['debug'] .= "\nThe result converted back to a linear decimal representation:\n";
 		$_SESSION['debug'] .= implode(",", $outputarr);
@@ -215,6 +244,44 @@ class ioOperations {
 		return $output;
 	}
 
+	public function convertStatesToByteString($result)
+	{
+        $output = "";
+		$len = count($result);
+		for ($i=0; $i<$len; $i++)
+		{
+			//for example state[2][1] should go to output-byte 6, so out[6]=state[6%4][floor(6/4)]
+			$output .= self::convertStateToByteString($result[$i]);
+		}
+		$_SESSION['debug'] .= "\nconvertStatesToByteString Result: \n";
+		$_SESSION['debug'] .= implode(",", $outputarr);
+		return $output;
+	}
+
+	/**
+	* Converts an array of states to a single byte array.
+	* @param $input an array of states
+	*
+	*
+	*/
+	public function convertStatesToByteArray($result)
+	{
+		if(!is_array($result)){
+			die("No input array! ".$result); // geen idee wat die() voor gevolgen heeft, maar het klinkt effectief.
+		}
+		$output = array();
+		$len = count($result);
+		//$_SESSION['debug'] .= "\n".$result[0]."\n";
+		//$_SESSION['debug'] .= "\n".implode(", ",$result[0])."\n";
+		for ($i=0; $i<$len; $i++)
+		{
+			//for example state[2][1] should go to output-byte 6, so out[6]=state[6%4][floor(6/4)]
+			$output = array_merge($output,self::convertStateToByteArray($result[$i]));
+		}
+		$_SESSION['debug'] .= "\nThe Result of convertStatesToByteArray: \n";
+		$_SESSION['debug'] .= implode(",",$output);
+		return $output;
+	}
 }
 
 ?>
