@@ -258,7 +258,7 @@ class ioOperations {
 			$output .= self::convertStateToByteString($result[$i]);
 		}
 		$_SESSION['debug'] .= "\nconvertStatesToByteString Result: \n";
-		$_SESSION['debug'] .= implode(",", $outputarr);
+		$_SESSION['debug'] .= implode(",", $output);
 		return $output;
 	}
 
@@ -286,6 +286,6 @@ class ioOperations {
 		$_SESSION['debug'] .= implode(",",$output);
 		return $output;
 
+	}
 }
-
 ?>
