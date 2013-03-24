@@ -216,7 +216,7 @@ class ioOperations {
 			//for example state[2][1] should go to output-byte 6, so out[6]=state[6%4][floor(6/4)]
 			$outputarr[$i] = $result[$i%4][floor($i/4)];
 		}
-		$_SESSION['debug'] .= "\nThe result converted back to a linear decimal representation:\n";
+		$_SESSION['debug'] .= "\nThe result converted to an array of bytes\n";
 		$_SESSION['debug'] .= implode(",", $outputarr);
 
 		/*
@@ -232,13 +232,15 @@ class ioOperations {
 	public function convertStateToByteString($rage)
 	{
         $output = "";
-
+		if(count($rage) != 4){
+			die("waat");
+		}
 		for ($i=0; $i<16; $i++)
 		{
 			//for example state[2][1] should go to output-byte 6, so out[6]=state[6%4][floor(6/4)]
 			$outputarr[$i] = $rage[$i%4][floor($i/4)];
 		}
-		$_SESSION['debug'] .= "\nThe result converted back to a linear decimal representation:\n";
+		$_SESSION['debug'] .= "\nConvertStateToByteString :\n";
 		$_SESSION['debug'] .= implode(",", $outputarr);
 
 		for ($i=0; $i<16; $i++)
@@ -254,11 +256,10 @@ class ioOperations {
 		$len = count($result);
 		for ($i=0; $i<$len; $i++)
 		{
-			//for example state[2][1] should go to output-byte 6, so out[6]=state[6%4][floor(6/4)]
 			$output .= self::convertStateToByteString($result[$i]);
 		}
 		$_SESSION['debug'] .= "\nconvertStatesToByteString Result: \n";
-		$_SESSION['debug'] .= implode(",", $output);
+		$_SESSION['debug'] .= $output;
 		return $output;
 	}
 
@@ -273,14 +274,16 @@ class ioOperations {
 		if(!is_array($result)){
 			die("No input array! ".$result); // geen idee wat die() voor gevolgen heeft, maar het klinkt effectief.
 		}
+		if(!$result){
+			die("Empty input array"); // $result is empty
+		}
 		$output = array();
 		$len = count($result);
 		//$_SESSION['debug'] .= "\n".$result[0]."\n";
 		//$_SESSION['debug'] .= "\n".implode(", ",$result[0])."\n";
 		for ($i=0; $i<$len; $i++)
 		{
-			//for example state[2][1] should go to output-byte 6, so out[6]=state[6%4][floor(6/4)]
-			$output = array_merge($output,self::convertStateToByteArray($result[$i]));
+			$output = $output + self::convertStateToByteArray($result[$i]);
 		}
 		$_SESSION['debug'] .= "\nThe Result of convertStatesToByteArray: \n";
 		$_SESSION['debug'] .= implode(",",$output);
