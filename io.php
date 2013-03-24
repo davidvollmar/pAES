@@ -167,6 +167,7 @@ class ioOperations {
 		// so first input-byte goes to state[0][0], second input-byte goes to state[1][0], etc
 		$state =  array();
 		$byteArray = self::fillPadding($byteArray);
+		$_SESSION['debug'] .= "\ngetState-methode\n";
 		$_SESSION['debug'] .= "\nThe input converted to a 4x4 state-array\n";
 		for ($i=0; $i<16; $i++)
 		{
@@ -191,13 +192,16 @@ class ioOperations {
 	 * @param $byteArray
 	 * @return array states
 	 */
-	public function getStates($byteArray){			
-		$byteArray = self::fillPadding($byteArray);		
+	public function getStates($byteArray){		
+		$_SESSION['debug'] .= "\ngetStates(!)-methode\n";	
+		$byteArray = self::fillPadding($byteArray);	
+		$_SESSION['debug'] .= "bytearray na padding: ".implode(",",$byteArray)."\n";	
 		$len = count($byteArray);
 		$states = array();
 		$counter = 0;
 		for($i = 0 ; $i < $len ; $i+=16){
 			$states[$counter] = self::getState(array_slice($byteArray,$i,16));
+			$_SESSION['debug'] .= "bloknr:".($i/16)."\nstateblok:".implode(",",array_slice($byteArray,$i,16))."\n";			
 			$counter++;
 		}
 		return $states;
@@ -281,7 +285,7 @@ class ioOperations {
 		$_SESSION['debug'] .= "\nThe Result of convertStatesToByteArray: \n";
 		$_SESSION['debug'] .= implode(",",$output);
 		return $output;
-	}
+
 }
 
 ?>
