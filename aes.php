@@ -360,7 +360,8 @@ private static $InvS_Box = array(
 	   }
 	  
 	  public function cbc_encrypt($input, $key, $IV)
-	  {	  
+	  {
+            $IO = new ioOperations();
 			// CBC Mode encryptie :
 			// $input is in dit geval een array van blokken van 128 bits groot (states).
 			// Hoeveel blokken moeten we encrypten ?
@@ -371,8 +372,9 @@ private static $InvS_Box = array(
 			$eersteBlok = array();
 			// Encryptie :					
 			// Stap 1 : Eerste blok klare tekst XORen met de IV.				
-			$eersteBlok = $input[0]; // Haal eerste state blok uit de array van blokken					
-			$result = self::xorState($eersteBlok,$IV);			
+			$eersteBlok = $input[0]; // Haal eerste state blok uit de array van blokken
+            $IV_stated  = $IO->getState($IV);
+			$result = self::xorState($eersteBlok,$IV_stated);
 			$_SESSION['debug'] .= "Resultaat XOR met IV als bytearray: ".implode(",",$result)."\n";
 			$result = self::encrypt($result,$key);
 			$endResult[0]=$result; 	  	
@@ -381,7 +383,7 @@ private static $InvS_Box = array(
 			for ($p = 1 ; $p < $aantalBlokken;$p++) 
 			{		
 				$result = self::encrypt($result,$key);
-				$result = self::xorState($result, $input[$p]);					
+				$result = self::xorState($result, $IO->getState($input[$p]));
 				$endResult[$p] = $result;
 			}	
 			$_SESSION['debug'] .= "cbc encryptie eindresultaat:".implode(",",$endResult)."\n";			
@@ -390,7 +392,8 @@ private static $InvS_Box = array(
 	  }
 	  	  
 	  public function cbc_decrypt($input,$key,$IV)
-	  {  
+	  {
+            $IO = new ioOperations();
 			// CBC Mode decryptie :
 			// $input is in dit geval een array van blokken van 128 bits groot (states).
 			$result = array();
@@ -403,7 +406,7 @@ private static $InvS_Box = array(
 			$aantalBlokken = count($input);
 			$eersteBlokDecr = self::decrypt($input[0],$key);
 			// XOR met IV na decryptie eerste blok (laatste blok van encryptie)
-			$result = self::xorState($eersteBlokDecr,$IV);	
+			$result = self::xorState($eersteBlokDecr,$IO->getState($IV));
 			//$endResult[$aantalBlokken] = $result;
 			$endResult[0] = $result;
 
@@ -416,7 +419,7 @@ private static $InvS_Box = array(
 			for($i=1;$i<($aantalBlokken);$i++)
 			{					
 				$result = self::decrypt($input[$i],$key);
-				$result = self::xorState($result,$input[($i-1)]);
+				$result = self::xorState($result,$IO->getState($input[($i-1)]));
 				$endResult[$i] = $result;
 			}
 			return $endResult;				
