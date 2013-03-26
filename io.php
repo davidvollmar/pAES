@@ -136,25 +136,29 @@ class ioOperations {
 	 * @return array $byteArray
 	 */
 	public function fillPadding($byteArray){
-		$ret = array();
-		$len = count($byteArray);
+        $ret = array();
+        $len = count($byteArray);
 
-		if($len % 16 == 0){
-			// padding is ok.
-			return $byteArray;
-		}else{
-			$amount = 16 - ($len % 16);
-		}
-		for($i = 0 ; $i < $amount ; $i++){
-			$ret[$i] = 0;
-		}
-		echo("padding_byteArray: ");
-		var_dump($byteArray);
-		echo("<br />");
-		echo("padding_ret");
-		var_dump($ret);
-		echo("<br />");
-		return array_merge($byteArray,$ret);
+        if($len % 16 == 0){
+            // padding is ok.
+            return $byteArray;
+        }else{
+            $amount = 16 - ($len % 16);
+        }
+        for($i = 0 ; $i < $amount ; $i++){
+            $ret[$i] = 0;
+        }
+        echo("padding_byteArray: ");
+        var_dump($byteArray);
+        echo("<br />");
+        echo("padding_ret");
+        var_dump($ret);
+        echo("<br />");
+        echo("<br /> padding_retret: ");
+        $ret = array_merge($byteArray, $ret);
+        var_dump($ret);
+        echo("<br />");
+        return $ret;
 	}
 
 	/**

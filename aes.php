@@ -219,7 +219,7 @@ private static $InvS_Box = array(
 					$_SESSION['debug'] .= "Aantal rondes : ".$aantalRondes."\n";
 				} else
 				$_SESSION['debug'] .= "Controleer sleutel lengte. Moet 128/192/256 bits zijn.\n" ;	 
-	 
+
 			// Stap 1 : Pak de State Array en pak de oorspronkelijke sleutel. Voer hiermee AddRoundKey() uit.
 			// Ook wel iteratie 0, initieel genoemd.
 			$w = self::keyExpansion($key); //generate roundkeys in key expansion
@@ -230,7 +230,7 @@ private static $InvS_Box = array(
 			for($i=1;$i<$aantalRondes;$i++)
 				{
 					$substitutedBytes=self::subBytes($result);
-					$shiftedRows=self::shiftRows($substitutedBytes);	
+					$shiftedRows=self::shiftRows($substitutedBytes);
 					$mixedColumns=self::mixColumns($shiftedRows);
 					$result = self::addRoundKey($mixedColumns, $w, $i); //add roundkey
 				}
@@ -238,7 +238,7 @@ private static $InvS_Box = array(
 // Stap 3 laatste stap : Sub, shift, addRoundKey :
 
 			$substitutedBytes=self::subBytes($result);
-			$shiftedRows=self::shiftRows($substitutedBytes);	
+			$shiftedRows=self::shiftRows($substitutedBytes);
 			$EncryptedResult = self::addRoundKey($shiftedRows, $w, $aantalRondes); //add roundkey
 
 			$_SESSION['debug'] .= "Encrypted result :\n";
@@ -249,20 +249,20 @@ private static $InvS_Box = array(
 			if ($column < 3) $_SESSION['debug'] .= ", ";
 			}
 			$_SESSION['debug'] .= ")\n";
-					 }	
+					 }
 					 return($EncryptedResult);
 	} //end function encrypt
 
       public function decrypt($input, $key)
       {
 			$aantalRondes = 0;
-			$keylengte = count($key)*8;			
+			$keylengte = count($key)*8;
 			if($keylengte == 128 || $keylengte == 192 || $keylengte == 256)
 				{
 					$_SESSION['debug'] .= "Sleutel is " .$keylengte. " bits.\n";
 					if($keylengte == 128) {$aantalRondes = 10;} else
 					if($keylengte == 192) {$aantalRondes = 12;} else
-					if($keylengte == 256) {$aantalRondes = 14;}															
+					if($keylengte == 256) {$aantalRondes = 14;}
 					$_SESSION['debug'] .= "Aantal rondes : ".$aantalRondes."\n";
 				} else
 				$_SESSION['debug'] .= "Controleer sleutel lengte. Moet 128/192/256 bits zijn.\n" ;	
@@ -500,12 +500,12 @@ private static $InvS_Box = array(
 			for($i=0;$i<=$counterMax;$i++)
 			{			
 				// XOR IV met $counter :
-					$byteArrayFromCounter = $IO->getState(dechex($i));
+					$byteArrayFromCounter = $IO->getState($IO->fillPadding(array($i)));
 				//	$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
-					$IVX = self::xorState($IV,$byteArrayFromCounter);
+					$IVX = self::xorState($IO->getState($IV),$byteArrayFromCounter);
 				//	$_SESSION['debug'] .= "Resultaat XOR ByteArray met counter: ".implode(",",$IVX)."\n";
 				// encrypt de geXORde counter met IV met de key:
-					$result = self::encrypt($IVX,$key);
+					$result = self::encrypt($IVX,$IO->getState($key));
 				// XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
 					$result = self::xorState($result,$input[$i]);
 					$endResult[$i] = $result;
@@ -532,12 +532,12 @@ private static $InvS_Box = array(
 			for($i=0;$i<=$counterMax;$i++)
 			{			
 				// XOR IV met $counter :
-					$byteArrayFromCounter = $IO->getState(dechex($i));
+					$byteArrayFromCounter = $IO->getState($IO->fillPadding(array($i)));
 			//		$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
-					$IVX = self::xorState($IV,$byteArrayFromCounter);
+					$IVX = self::xorState($IO->getState($IV),$byteArrayFromCounter);
 			//		$_SESSION['debug'] .= "Resultaat XOR IV met counter: ".implode(",",$IVX)."\n";
 				// encrypt de geXORde counter met IV met de key:
-					$result = self::encrypt($IVX,$key);
+					$result = self::encrypt($IVX,$IO->getState($key));
 				// XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
 					$result = self::xorState($result,$input[$i]);
 					$endResult[$i] = $result;
@@ -823,6 +823,14 @@ static $mul14 = array(
 	  
 	  public function xorState($state1, $state2)
 	  {
+        if(!$state1){
+            die("nvl state1");
+        }
+        if(!$state2){
+            die("nvl state2");
+        }
+
+
 		for($i = 0 ;$i<4;$i++)
 			{
 				for($k=0;$k<4;$k++)
@@ -832,33 +840,7 @@ static $mul14 = array(
 			}
 		return $result;	  
 	  }
-	  
-	  /**
-	 * Fills the padding of $byteArray: adds zero's to the byteArray until the length of bytearray modulo 16 equals 0
-	 * @param array $byteArray
-	 * @return array $byteArray
-	 */
-	public function fillPadding($byteArray){
-		$ret = array();
-		$len = count($byteArray);
 
-		if($len % 16 == 0){
-			// padding is ok.
-			return $byteArray;
-		}else{
-			$amount = 16 - ($len % 16);
-		}
-		for($i = 0 ; $i < $amount ; $i++){
-			$ret[$i] = 0;
-		}
-		echo("padding_byteArray: ");
-		var_dump($byteArray);
-		echo("<br />");
-		echo("padding_ret");
-		var_dump($ret);
-		echo("<br />");
-		return array_merge($byteArray,$ret);
-	}
 	  
    } //end class AesSubBytes
 

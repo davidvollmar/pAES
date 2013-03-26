@@ -119,9 +119,11 @@ function magic3($in,$key){
 	var_dump(count($in2));
 	echo("<br />");
 	$IV = $AES->makeIV();
+    echo("<br /> IV: ");
+    var_dump($IV);
 	$in2 = $IO->fillPadding($in2);
 	$in3 = $IO->getStates($in2);
-	$out = $AES->cbc_encrypt($in3,$key,$IV);
+	$out = $AES->ctr_encrypt($in3,$key,$IV);
 	//$out = $AES->sbm_encrypt($in3,$key);
 	echo("<br / > out: ");
 	var_dump($out);
@@ -135,7 +137,7 @@ function magic3($in,$key){
 	var_dump($out2);
 	echo("<br />");
 	$in10 = $IO->getStates($out2);
-	$in11 = $AES->cbc_decrypt($in10,$key,$IV);
+	$in11 = $AES->ctr_decrypt($in10,$key,$IV);
 	//$in11 = $AES->sbm_decrypt($in10,$key);
 	$out10 = $IO->convertStatesToByteArray($in11);
 	echo("out10: ");
@@ -145,8 +147,7 @@ function magic3($in,$key){
 	var_dump($out10 === $in2);
 
 
-}
-class Aes {
+}class Aes {
 
     /**
      * This class implements onse part of the AES algortihm, the subBytes operation.
@@ -223,7 +224,7 @@ class Aes {
             $IV[$i] = $random;
         }
         $_SESSION['debug'] .= "De IV als bytearray : ". implode(",", $IV) ."\n";
-        $IV = $IO->getState($IV); // maak een State blok van de IV
+        //$IV = $IO->getState($IV); // maak een State blok van de IV
         return $IV;
     }
 
@@ -505,6 +506,13 @@ class Aes {
 
     public function ctr_encrypt($input,$key,$IV)
     {
+        echo("<br />ECB_IN_INPUT: ");
+        var_dump($input);
+        echo("<br />ECB_IN_KEY: ");
+        var_dump($key);
+        echo("<br />ECB_IN_IV: ");
+        var_dump($IV);
+        echo("<br />");
         $IO = new ioOperations();
         // Counter mode :
         // Met iedere IV een int meegeven.
@@ -516,19 +524,19 @@ class Aes {
         // maken teller :
         // Hoeveel blokken moeten we encrypten ?
         $IVX = array();
-        $aantalBlokken = 0; // init.
+
         $aantalBlokken = count($input); // $input is een array van state blokken
-        $counterMax = $aantalBlokken;
+
         // start loop:
-        for($i=0;$i<=$counterMax;$i++)
+        for($i=0;$i<$aantalBlokken;$i++)
         {
             // XOR IV met $counter :
-            $byteArrayFromCounter = $IO->getState(dechex($i));
+            $byteArrayFromCounter = $IO->getState($IO->fillPadding(array($i)));
             //	$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
-            $IVX = self::xorState($IV,$byteArrayFromCounter);
+            $IVX = self::xorState($IO->getState($IV),$byteArrayFromCounter);
             //	$_SESSION['debug'] .= "Resultaat XOR ByteArray met counter: ".implode(",",$IVX)."\n";
             // encrypt de geXORde counter met IV met de key:
-            $result = self::encrypt($IVX,$key);
+            $result = self::encrypt($IVX,$IO->getState($key));
             // XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
             $result = self::xorState($result,$input[$i]);
             $endResult[$i] = $result;
@@ -547,20 +555,20 @@ class Aes {
         $IVX = array();
         // maken teller :
         // Hoeveel blokken moeten we encrypten ?
-        $aantalBlokken = 0; // init.
+
         $aantalBlokken = count($input); // $input is een array van state blokken
-        $counterMax = $aantalBlokken;
+
         $IO = new ioOperations();
         // start loop:
-        for($i=0;$i<=$counterMax;$i++)
+        for($i=0;$i<$aantalBlokken;$i++)
         {
             // XOR IV met $counter :
-            $byteArrayFromCounter = $IO->getState(dechex($i));
+            $byteArrayFromCounter = $IO->getState($IO->fillPadding(array($i)));
             //		$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
-            $IVX = self::xorState($IV,$byteArrayFromCounter);
+            $IVX = self::xorState($IO->getState($IV),$byteArrayFromCounter);
             //		$_SESSION['debug'] .= "Resultaat XOR IV met counter: ".implode(",",$IVX)."\n";
             // encrypt de geXORde counter met IV met de key:
-            $result = self::encrypt($IVX,$key);
+            $result = self::encrypt($IVX,$IO->getState($key));
             // XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
             $result = self::xorState($result,$input[$i]);
             $endResult[$i] = $result;
@@ -846,12 +854,14 @@ class Aes {
 
     public function xorState($state1, $state2)
     {
-        echo("<br /><pre> State 1: ");
-        var_dump($state1);
-        echo("</pre><br />");
-        echo("<br /><pre> State 2: ");
-        var_dump($state2);
-        echo("</pre><br />");
+        if(!$state1){
+            die("nvl state1");
+        }
+        if(!$state2){
+            die("nvl state2");
+        }
+
+
         for($i = 0 ;$i<4;$i++)
         {
             for($k=0;$k<4;$k++)
@@ -860,33 +870,6 @@ class Aes {
             }
         }
         return $result;
-    }
-
-    /**
-     * Fills the padding of $byteArray: adds zero's to the byteArray until the length of bytearray modulo 16 equals 0
-     * @param array $byteArray
-     * @return array $byteArray
-     */
-    public function fillPadding($byteArray){
-        $ret = array();
-        $len = count($byteArray);
-
-        if($len % 16 == 0){
-            // padding is ok.
-            return $byteArray;
-        }else{
-            $amount = 16 - ($len % 16);
-        }
-        for($i = 0 ; $i < $amount ; $i++){
-            $ret[$i] = 0;
-        }
-        echo("padding_byteArray: ");
-        var_dump($byteArray);
-        echo("<br />");
-        echo("padding_ret");
-        var_dump($ret);
-        echo("<br />");
-        return array_merge($byteArray,$ret);
     }
 
 } //end class AesSubBytes
