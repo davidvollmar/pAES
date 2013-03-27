@@ -524,16 +524,18 @@ private static $InvS_Box = array(
 			// maken teller :		
 			// Hoeveel blokken moeten we encrypten ?
 			$IVX = array();
+			$StateFromCounter = array();
 			$aantalBlokken = 0; // init.
 			$aantalBlokken = count($input); // $input is een array van state blokken
 			$counterMax = $aantalBlokken;
+			
 			// start loop:
 			for($i=0;$i<=$counterMax;$i++)
 			{			
 				// XOR IV met $counter :
-					$byteArrayFromCounter = $IO->getState(dechex($i));
+					$StateFromCounter = $IO->getState(dechex(($i+12345)));
 				//	$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
-					$IVX = self::xorState($IO->getState($IV),$byteArrayFromCounter);
+					$IVX = self::xorState($IO->getState($IV),$StateFromCounter);
 				//	$_SESSION['debug'] .= "Resultaat XOR ByteArray met counter: ".implode(",",$IVX)."\n";
 				// encrypt de geXORde counter met IV met de key:
 					$result = self::encrypt($IVX,$key);
@@ -553,6 +555,7 @@ private static $InvS_Box = array(
 		// CTR Mode encryptie :
 			// $input is een array van state blokken.						
 			$IVX = array();
+			$StateFromCounter = array();
 			// maken teller :		
 			// Hoeveel blokken moeten we encrypten ?
 			$aantalBlokken = 0; // init.
@@ -560,12 +563,12 @@ private static $InvS_Box = array(
 			$counterMax = $aantalBlokken;
 			$IO = new ioOperations();
 			// start loop:
-			for($i=0;$i<=$counterMax;$i++)
+			for($i=0;$i<$counterMax-1;$i++)
 			{			
 				// XOR IV met $counter :
-					$byteArrayFromCounter = $IO->getState(dechex($i));
+					$StateFromCounter = $IO->getState(dechex(($i+12345)));
 			//		$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
-					$IVX = self::xorState($IO->getState($IV),$byteArrayFromCounter);
+					$IVX = self::xorState($IO->getState($IV),$StateFromCounter);
 			//		$_SESSION['debug'] .= "Resultaat XOR IV met counter: ".implode(",",$IVX)."\n";
 				// encrypt de geXORde counter met IV met de key:
 					$result = self::encrypt($IVX,$key);
