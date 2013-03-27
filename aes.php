@@ -32,7 +32,16 @@
       $aesops = new Aes();
       $result = array();
 	 // $IV = $aesops->makeIV(); // we gebruiken zelfde IV voor alle encrypties
-	  $IV=explode(",","a0,d4,90,97,e4,eb,ba,1,c9,c7,20,9c,e8,1d,1c,de");
+	 // $IV=explode(",","a0,d4,90,97,e4,eb,ba,1,c9,c7,20,9c,e8,1d,1c,de");
+	 //$IV = array(0x12, 0x13, 0xfa, 0x1a, 0x2b, 0x3c,0x00, 0x01, 0x3c, 0x4a, 0x4c, 0x37,0x20, 0x21, 0x42, 0x11);
+	// IV voor tests volgens http://tools.ietf.org/html/draft-ietf-ipsec-ciph-aes-cbc-04
+	// 1 blok CBC encrypten IV :
+	// $IV = array(0x3d,0xaf,0xba,0x42,0x9d,0x9e,0xb4,0x30,0xb4,0x22,0xda,0x80,0x2c,0x9f,0xac,0x41);
+	// 2 blokken CBC encrypten IV :
+	//$IV=array(0x56,0x2e,0x17,0x99,0x6d,0x09,0x3d,0x28,0xdd,0xb3,0xba,0x69,0x5a,0x2e,0x6f,0x58);
+	// 3 blokken CBC encrypten IV :
+	$IV=array(0xc7,0x82,0xdc,0x4c,0x09,0x8c,0x66,0xcb,0xd9,0xcd,0x27,0xd8,0x25,0x68,0x2c,0x81);
+	
       $_SESSION['debug'] .= "\nThe ". $operation . " operation:\n";
       switch ($operation){
          case "subBytes":
@@ -112,7 +121,7 @@
       $_SESSION['debug'] .= "\nThis should only apear once.\n";
       $output = $iop->convertStatesToByteString($result);
       $_SESSION['debug'] .= "\n\nThe hexadecimal result of the ". $operation ." operation:\n$output\n";
-      $_SESSION['output'] = $output;
+      $_SESSION['output'] .= $output;	 
    }
    header('Location:operations.php'); //reload the operations.php page with the session values
 ?>
@@ -201,6 +210,7 @@ private static $InvS_Box = array(
 			}
 			$_SESSION['debug'] .= "De IV als bytearray : ". implode(",", $IV) ."\n"; 
 			$IV = $IO->getState($IV); // maak een State blok van de IV
+			
 			return $IV;
 		}
 		
@@ -298,6 +308,7 @@ private static $InvS_Box = array(
 			die("Invalid input at smb_encrypt");
 		}else
 			$return = array();
+			$_SESSION['debug'] .= "PETERS DESPERATE BUG CHECK ON STATE:".implode(",",$input)."\n";
 			$return[0] = self::encrypt($input[0],$key);
 			return $return;
 	}
@@ -361,6 +372,10 @@ private static $InvS_Box = array(
 	  
 	  public function cbc_encrypt($input, $key, $IV)
 	  {
+			// Er gaat iets helemaal mis met de IV vermoedelijk
+			// debuggen IV:			
+			$_SESSION['debug'] .= "imploded IV: \n".implode(",",$IV)."\n";
+			// De IV lijkt gewoon in orde te zijn nu
             $IO = new ioOperations();
 			// CBC Mode encryptie :
 			// $input is in dit geval een array van blokken van 128 bits groot (states).
@@ -369,24 +384,33 @@ private static $InvS_Box = array(
 			$aantalBlokken = count($input); // $input is een array van state blokken		
 			$endResult = array();
 			$result=array();
+			$XORresult=array();
 			$eersteBlok = array();
 			// Encryptie :					
 			// Stap 1 : Eerste blok klare tekst XORen met de IV.				
 			$eersteBlok = $input[0]; // Haal eerste state blok uit de array van blokken
-            $IV_stated  = $IO->getState($IV);
+            $IV_stated  = $IO->getState($IV); // maak state van de IV voor XOR operatie
+			$_SESSION['debug'] .= "De IV stated: ".implode(",",$IV_stated)."\n"; // to be sure
 			$result = self::xorState($eersteBlok,$IV_stated);
 			$_SESSION['debug'] .= "Resultaat XOR met IV als bytearray: ".implode(",",$result)."\n";
+			// Encrypt het resultaat van de XOR tussen M1 en IV :
 			$result = self::encrypt($result,$key);
-			$endResult[0]=$result; 	  	
+			$endResult[0]=$result; // Eerste blok C1 opslaan in array	  	
 			
 			// Stap 2 : Loop starten. Gebruik output van ieder blok om te XORen met volgende blok.
 			for ($p = 1 ; $p < $aantalBlokken;$p++) 
-			{		
-				$result = self::encrypt($result,$key);
-				$result = self::xorState($result, $IO->getState($input[$p]));
+			{
+				$XORresult = self::xorState($result, $input[$p]);
+				$result = self::encrypt($XORresult,$key);				
+				$endResult[$p] = $result;			
+			/*
+				PeterK: $input is al een array van states newb. nie mee rommelen dus.
+				$XORresult = self::xorState($result, $IO->getState($input[$p]));
+				$result = self::encrypt($XORresult,$key);				
 				$endResult[$p] = $result;
+			*/
 			}	
-			$_SESSION['debug'] .= "cbc encryptie eindresultaat:".implode(",",$endResult)."\n";			
+			$_SESSION['debug'] .= "cbc encryptie eindresultaat:".implode(",",$endResult)."\n";	
 			return $endResult; // array van encrypted blokken
 			
 	  }
@@ -413,13 +437,14 @@ private static $InvS_Box = array(
 			// Stap 2
 			// Loop waarin de encrypted blokken geXORred worden met de klare tekst na de volgende decrypt operatie
 			// onthoud blok in $eersteBlok
-			$eersteBlok = $input[0]; // pak eerste blok uit encrypted array
+			//$eersteBlok = $input[0]; // pak eerste blok uit encrypted array
 			// output eerste stap met decryptie en IV-XOR zit in $result nu
 			// start loop			
 			for($i=1;$i<($aantalBlokken);$i++)
 			{					
 				$result = self::decrypt($input[$i],$key);
-				$result = self::xorState($result,$IO->getState($input[($i-1)]));
+				$result = self::xorState($result,$input[($i-1)]);
+				
 				$endResult[$i] = $result;
 			}
 			return $endResult;				
@@ -439,16 +464,16 @@ private static $InvS_Box = array(
 			// Encryptie :			
 			// Stap 1: De IV moet vercijferd worden met de key :
 			$result = self::encrypt($IV,$key);
-			// Stap 2 : De output van de IV-vercijfering moet geXORed worden met Blok 1 Klare tekst
-			$eersteBlok = $input[0]; // Haal eerste state blok uit de array van blokken	
-			$result = self::xorState($result,$eersteBlok);
-			$_SESSION['debug'] .= "Resultaat XOR van IV met M1: ".$result."\n"; 						  				
+			// Stap 2 : De output van de IV-vercijfering moet geXORed worden met Blok 1 Klare tekst			
+			$result = self::xorState($result,$input[0]);
+			$_SESSION['debug'] .= "Resultaat XOR van IV met M1: ".$result."\n";
+			$endResult[0] = $result; 						  				
 			// Stap 3 : Loop starten. Gebruik output van ieder blok om te XORen met volgende blok.
 			for ($p = 1 ; $p < $aantalBlokken;$p++) 
 			{		
-				$result = self::encrypt($result,$key);
-				$result = self::xorState($result, $input[p]);					
-				$endResult[p] = $result;
+				$result = self::encrypt($endResult[($p-1)],$key);
+				$result = self::xorState($result, $input[$p]);					
+				$endResult[$p] = $result;
 			}				
 			return $endResult; // array van CFB encrypted blokken		
 		}
@@ -463,9 +488,9 @@ private static $InvS_Box = array(
 			$aantalBlokken = count($input); 
 			// Stap 1 CFB decryptie :
 			// ENCRYPTIE(!) van de IV :
-			$result = self::encrypt($IV);
+			$result = self::encrypt($IV,$key);
 			// Voer XOR uit met C1 en de encrypted IV :
-			$result = xorState($result,$input[0]);
+			$result = self::xorState($result,$input[0]);
 			// $result bevat nu het eerste blok klare tekst M1.
 			// aan array toevoegen van eindresultaat :
 			$endResult[0] = $result;			
@@ -477,7 +502,6 @@ private static $InvS_Box = array(
 				$endResult[$i] = $result;
 			}
 			return $endResult;			
-			
 		}
 	  
 	  public function ctr_encrypt($input,$key,$IV)
@@ -549,8 +573,8 @@ private static $InvS_Box = array(
       {
          for ($row=0; $row<4; $row++){ // for all 16 bytes in the (4x4-byte) State
             for ($column=0; $column<4; $column++){ // for all 16 bytes in the (4x4-byte) State
-        //       $_SESSION['debug'] .= "subBytes : state[$row][$column]=" . $state[$row][$column] .
-         //         "-->" . self::$sBox[$state[$row][$column]]."\n";
+               $_SESSION['debug'] .= "subBytes : state[$row][$column]=" . $state[$row][$column] .
+                 "-->" . self::$sBox[$state[$row][$column]]."\n";
                $state[$row][$column] = self::$sBox[$state[$row][$column]];
             }
          }
@@ -561,8 +585,8 @@ public function invSubBytes($state)
 {
          for ($row=0; $row<4; $row++){ // for all 16 bytes in the (4x4-byte) State
             for ($column=0; $column<4; $column++){ // for all 16 bytes in the (4x4-byte) State
-          //     $_SESSION['debug'] .= "state na invSubBytes : state[$row][$column]=" . $state[$row][$column] .
-          //        "-->" . self::$InvS_Box[$state[$row][$column]]."\n";
+               $_SESSION['debug'] .= "state na invSubBytes : state[$row][$column]=" . $state[$row][$column] .
+                  "-->" . self::$InvS_Box[$state[$row][$column]]."\n";
 // here we actually do stuff:
                $state[$row][$column] = self::$InvS_Box[$state[$row][$column]];
             }
@@ -583,7 +607,7 @@ public function invSubBytes($state)
          for ($row=0; $row<4; $row++){
             for ($column=0; $column<4; $column++){
                $state[$row][$column] = $temp[$row][$column];
-         //      $_SESSION['debug'] .= "ShiftRows : state[$row][$column]=".$state[$row][$column]."\n";
+              $_SESSION['debug'] .= "ShiftRows : state[$row][$column]=".$state[$row][$column]."\n";
             }
          }
          return $state;
@@ -603,7 +627,7 @@ public function invShiftRows($state)
          for ($row=0; $row<4; $row++){
             for ($column=0; $column<4; $column++){
                $state[$row][$column] = $temp[$row][$column];
-         //      $_SESSION['debug'] .= "state after invShiftRows[$row][$column]=".$state[$row][$column]." in HEX :".dechex($state[$row][$column])."\n";
+               $_SESSION['debug'] .= "state after invShiftRows[$row][$column]=".$state[$row][$column]." in HEX :".dechex($state[$row][$column])."\n";
             }
          }
          return $state;
@@ -653,13 +677,13 @@ public function invShiftRows($state)
             $a = array(4); // 'a' is a copy of the current column from 's'
             for ($i=0; $i<4; $i++) $a[$i] = $state[$i][$c];
             
-        //    $_SESSION['debug'] .= "\nMixColumns : a is copy column from state: " . implode(",", $a);
+            $_SESSION['debug'] .= "\nMixColumns : a is copy column from state: " . implode(",", $a);
             $state[0][$c] = $mul2[$a[0]] ^ $mul3[$a[1]] ^ $a[2] ^ $a[3]; // 2*a0 + 3*a1 + a2 + a3
             $state[1][$c] = $a[0] ^ $mul2[$a[1]] ^ $mul3[$a[2]] ^ $a[3]; // a0 * 2*a1 + 3*a2 + a3
             $state[2][$c] = $a[0] ^ $a[1] ^ $mul2[$a[2]] ^ $mul3[$a[3]]; // a0 + a1 + 2*a2 + 3*a3
             $state[3][$c] = $mul3[$a[0]] ^ $a[1] ^ $a[2] ^ $mul2[$a[3]]; // 3*a0 + a1 + a2 + 2*a3
 
-         //   $_SESSION['debug'] .= "\nresulting column: ".$state[0][$c].",".$state[1][$c].",".$state[2][$c].",".$state[3][$c];
+           $_SESSION['debug'] .= "\nresulting column: ".$state[0][$c].",".$state[1][$c].",".$state[2][$c].",".$state[3][$c];
          }
          return $state;
       } // end function mixColumns
@@ -753,8 +777,8 @@ static $mul14 = array(
             $state[2][$c] = $mul13[$a[0]] ^ $mul9[$a[1]] ^ $mul14[$a[2]] ^ $mul11[$a[3]]; // 13*a0 + 9*a1 + 14*a2 + 11*a3
             $state[3][$c] = $mul11[$a[0]] ^ $mul13[$a[1]] ^ $mul9[$a[2]] ^ $mul14[$a[3]]; // 11*a0 + 13*a1 + 9*a2 + 14*a3
 
-       //     $_SESSION['debug'] .= "\nresulting column: ".$state[0][$c].",".$state[1][$c].",".$state[2][$c].",".$state[3][$c];
-		//	$_SESSION['debug'] .= "\ncolumn in Hexade: ".dechex($state[0][$c]).",".dechex($state[1][$c]).",".dechex($state[2][$c]).",".dechex($state[3][$c]."\n");
+            $_SESSION['debug'] .= "\nresulting column: ".$state[0][$c].",".$state[1][$c].",".$state[2][$c].",".$state[3][$c];
+			$_SESSION['debug'] .= "\ncolumn in Hexade: ".dechex($state[0][$c]).",".dechex($state[1][$c]).",".dechex($state[2][$c]).",".dechex($state[3][$c]."\n");
          }
          return $state;
       } // end function mixColumns
@@ -764,9 +788,9 @@ static $mul14 = array(
          $_SESSION['debug'] .= "\naddRoundKey:\n";
          for ($r=0; $r<4; $r++) {
             for ($c=0; $c<4; $c++){
-           //    $_SESSION['debug'] .= "state[".$r."][".$c."]=".$state[$r][$c]." XOR ".$w[$rnd*4+$c][$r]."=";
+               $_SESSION['debug'] .= "state[".$r."][".$c."]=".$state[$r][$c]." XOR ".$w[$rnd*4+$c][$r]."=";
                $state[$r][$c] ^= $w[$rnd*4+$c][$r];
-           //    $_SESSION['debug'] .= $state[$r][$c]."  In HEX: ".dechex($state[$r][$c])."\n";
+              $_SESSION['debug'] .= $state[$r][$c]."  In HEX: ".dechex($state[$r][$c])."\n";
             }
          }
          return $state;
@@ -774,20 +798,20 @@ static $mul14 = array(
 
       public static function keyExpansion($key) // generate Key Schedule from Key
       {
-      //   $_SESSION['debug'] .= "keyExpansion:\n";
+         $_SESSION['debug'] .= "keyExpansion:\n";
          $Nk = count($key)/4; // key length (in words): 4/6/8 for 128/192/256-bit keys
          $Nr = $Nk + 6; // no of rounds: 10/12/14 for 128/192/256-bit keys
   
          $w = array();
          $temp = array();
-       //  $_SESSION['debug'] .= "key[0]=";
+         $_SESSION['debug'] .= "key[0]=";
          for ($i=0; $i<$Nk; $i++) {
             $r = array($key[4*$i], $key[4*$i+1], $key[4*$i+2], $key[4*$i+3]);
             $w[$i] = $r;
-            //$_SESSION['debug'] .= "w[".$i."]=";
+            $_SESSION['debug'] .= "w[".$i."]=";
             for ($n=0; $n<4; $n++) $_SESSION['debug'] .= dechex($w[$i][$n])." ";
          }
-       //  $_SESSION['debug'] .= "\nkey[1]=";
+         $_SESSION['debug'] .= "\nkey[1]=";
          for ($i=$Nk; $i<(4*($Nr+1)); $i++) {
             $w[$i] = array();
             for ($t=0; $t<4; $t++) $temp[$t] = $w[$i-1][$t];
@@ -797,10 +821,10 @@ static $mul14 = array(
             } else if ($Nk > 6 && $i%$Nk == 4) {
             $temp = self::subWord($temp);
             }
-            //$_SESSION['debug'] .= "w[".$i."]=";
+            $_SESSION['debug'] .= "w[".$i."]=";
             for ($t=0; $t<4; $t++) {
                $w[$i][$t] = $w[$i-$Nk][$t] ^ $temp[$t];
-          //     $_SESSION['debug'] .= dechex($w[$i][$t])." ";
+               $_SESSION['debug'] .= dechex($w[$i][$t])." ";
             }
             if (((($i+1)%4)==0)&&($i<4*$Nr)) $_SESSION['debug'] .= "\nkey[".(($i+1)/4)."]=";
          }
