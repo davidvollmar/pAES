@@ -1,0 +1,42 @@
+ In cryptography, Kerckhoffs's principle (also called Kerckhoffs's Desiderata, Kerckhoffs's assumption, axiom, or law) was stated by Auguste Kerckhoffs in the 19th century: A cryptosystem should be secure even if everything about the system, except the key, is public knowledge.
+ 
+ 
+ Case #1: Encrypting 16 bytes (1 blocks) using AES-CBC with 128-bit key
+   Key       : 0x06a9214036b8a15b512e03d534120006
+   IV        : 0x3dafba429d9eb430b422da802c9fac41
+   Plaintext : "Single block msg"
+   Ciphertext: 0xe3 53 77 9c 10 79 ae b8 27 08 94 2d be 77 18 1a
+
+   uitkomst : e3 53 77 9c 10 79 ae b8 27 8 94 2d be 77 18 1a 
+   1 blok CBC encrypten gaat goed. decrypten ook.
+   
+   
+   Case #2: Encrypting 32 bytes (2 blocks) using AES-CBC with 128-bit key
+   Key       : c2 86 69 6d 88 7c 9a a0 61 1b bb 3e 20 25 a4 5a
+   IV        : 0x56,0x2e,0x17,0x99,0x6d,0x09,0x3d,0x28,0xdd,0xb3,0xba,0x69,0x5a,0x2e,0x6f,0x58
+   Plaintext : 00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f
+   Ciphertext: d2 96 cd 94 c2 cc cf 8a 3a 86 30 28 b5 e1 dc 0a, 75 86 60 2d 25 3c ff f9 1b 82 66 be a6 d6 1a b1
+	
+The hexadecimal result of the encrypt operation:
+d2 96 cd 94 c2 cc cf 8a 3a 86 30 28 b5 e1 dc a 75 86 60 2d 25 3c ff f9 1b 82 66 be a6 d6 1a b1
+** OP SUCCES! **
+
+The hexadecimal result of the decrypt operation:
+00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f 10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f 
+** OP SUCCES! **	
+2 blokken encrypten en decrypten gaat goed.
+	
+   Case #3: Encrypting 48 bytes (3 blocks) using AES-CBC with 128-bit key
+   Key       : 6c 3e a0 47 76 30 ce 21 a2 ce 33 4a a7 46 c2 cd
+   IV        : c7 82 dc 4c 09 8c 66 cb d9 cd 27 d8 25 68 2c 81
+   Plaintext : "This is a 48-byte message (exactly 3 AES blocks)"
+   Ciphertext: 0xd0a02b3836451753d493665d33f0e886
+                 2dea54cdb293abc7506939276772f8d5
+                 021c19216bad525c8579695d83ba2684
+	
+The hexadecimal result of the encrypt operation:
+d0 a0 2b 38 36 45 17 53 d4 93 66 5d 33 f0 e8 86 2d ea 54 cd b2 93 ab c7 50 69 39 27 67 72 f8 d5 02 1c 19 21 6b ad 52 5c 85 79 69 5d 83 ba 26 84
+
+The hexadecimal result of the decrypt operation:
+54 68 69 73 20 69 73 20 61 20 34 38 2d 62 79 74 65 20 6d 65 73 73 61 67 65 20 28 65 78 61 63 74 6c 79 20 33 20 41 45 53 20 62 6c 6f 63 6b 73 29 
+** OP SUCCES! **	 
