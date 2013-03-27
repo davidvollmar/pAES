@@ -513,61 +513,59 @@ private static $InvS_Box = array(
 			$endResult = array(); // Hier komt eindresultaat in van encrypted state blokken
 			$result=array();
 		// CTR Mode encryptie :
-			// $input is een array van state blokken.			
-			// maken teller :		
+			// $input is een array van state blokken.
+			// maken teller :
 			// Hoeveel blokken moeten we encrypten ?
 			$IVX = array();
-			$aantalBlokken = 0; // init.
-			$aantalBlokken = count($input); // $input is een array van state blokken
-			$counterMax = $aantalBlokken;
+			$counterMax = count($input); // $input is een array van state blokken
 			// start loop:
-			for($i=0;$i<=$counterMax;$i++)
-			{			
+			for($i=0;$i<$counterMax;$i++)
+			{
 				// XOR IV met $counter :
 					$byteArrayFromCounter = $IO->getState(dechex($i));
 				//	$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
-					$IVX = self::xorState($IV,$byteArrayFromCounter);
+					$IVX = self::xorState($IO->getState($IV),$byteArrayFromCounter);
 				//	$_SESSION['debug'] .= "Resultaat XOR ByteArray met counter: ".implode(",",$IVX)."\n";
 				// encrypt de geXORde counter met IV met de key:
 					$result = self::encrypt($IVX,$key);
 				// XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
 					$result = self::xorState($result,$input[$i]);
 					$endResult[$i] = $result;
-			}					
-			return $endResult; // array van CFB encrypted blokken			
+			}
+			return $endResult; // array van CFB encrypted blokken
 	  }
-	  
+
 	  public function ctr_decrypt($input,$key,$IV)
-	  {		
+	  {
 			// CTR Mode decryptie : (is gelijk aan encryptie eigenlijk)
 			// XORen met de IV array lijkt een goed idee op het moment.
 			$endResult = array(); // Hier komt eindresultaat in van encrypted state blokken
 			$result=array();
 		// CTR Mode encryptie :
-			// $input is een array van state blokken.						
+			// $input is een array van state blokken.
 			$IVX = array();
-			// maken teller :		
+			// maken teller :
 			// Hoeveel blokken moeten we encrypten ?
-			$aantalBlokken = 0; // init.
-			$aantalBlokken = count($input); // $input is een array van state blokken
-			$counterMax = $aantalBlokken;
+
+			$counterMax = count($input); // $input is een array van state blokken
+
 			$IO = new ioOperations();
 			// start loop:
-			for($i=0;$i<=$counterMax;$i++)
-			{			
+			for($i=0;$i<$counterMax;$i++)
+			{
 				// XOR IV met $counter :
 					$byteArrayFromCounter = $IO->getState(dechex($i));
 			//		$_SESSION['debug'] .= "Resultaat maken ByteArray van counter: ".$byteArrayFromCounter."\n";
-					$IVX = self::xorState($IV,$byteArrayFromCounter);
+					$IVX = self::xorState($IO->getState($IV),$byteArrayFromCounter);
 			//		$_SESSION['debug'] .= "Resultaat XOR IV met counter: ".implode(",",$IVX)."\n";
 				// encrypt de geXORde counter met IV met de key:
 					$result = self::encrypt($IVX,$key);
 				// XOR bewerking klare tekst blok en encrypted IV(incl counter dus):
 					$result = self::xorState($result,$input[$i]);
 					$endResult[$i] = $result;
-			}					
-			return $endResult; // array van CFB encrypted blokken	
-	  }
+			}
+			return $endResult; // array van CFB encrypted blokken
+		}
 	  	  
 	  public function subBytes($state)
       {
@@ -857,32 +855,7 @@ static $mul14 = array(
 		return $result;	  
 	  }
 	  
-	  /**
-	 * Fills the padding of $byteArray: adds zero's to the byteArray until the length of bytearray modulo 16 equals 0
-	 * @param array $byteArray
-	 * @return array $byteArray
-	 */
-	public function fillPadding($byteArray){
-		$ret = array();
-		$len = count($byteArray);
 
-		if($len % 16 == 0){
-			// padding is ok.
-			return $byteArray;
-		}else{
-			$amount = 16 - ($len % 16);
-		}
-		for($i = 0 ; $i < $amount ; $i++){
-			$ret[$i] = 0;
-		}
-		echo("padding_byteArray: ");
-		var_dump($byteArray);
-		echo("<br />");
-		echo("padding_ret");
-		var_dump($ret);
-		echo("<br />");
-		return array_merge($byteArray,$ret);
-	}
 	  
    } //end class AesSubBytes
 
